@@ -107,4 +107,54 @@ Spring provides different bean scopes to control the lifecycle of beans:
 - **Session** – A new bean instance is created for each HTTP session.
 - **Application** – A single bean instance is created for the entire ServletContext (application-wide scope).
 
+## 13. Difference between PUT and PATCH?
 
+**Answer:** Both PUT and PATCH are HTTP methods used for updating resources in REST APIs, but they differ in how much data they update.
+
+PUT:
+- Updates entire object
+- Idempotent
+
+PATCH:
+- Partial update
+- Only modified fields
+
+**Interview Answer (Short)**
+
+PUT is used to fully update a resource and replaces the entire object, while PATCH is used for partial updates where only specific fields are modified. PUT requires the full request body, whereas PATCH only needs the fields that need to be updated.
+
+## 14. What is @Transactional?
+
+**Answer:** @Transactional is a Spring annotation used to define transaction management at the method or class level. It ensures that a set of database operations are executed within a single transaction, providing ACID properties (Atomicity, Consistency, Isolation, Durability).
+
+**How it works:** When a method is marked with @Transactional:
+1. Spring starts a transaction before method execution
+2. All database operations inside the method are part of that transaction
+3. If the method completes successfully → transaction is committed
+4. If an exception occurs → transaction is rolled back
+
+**Key Features**
+- Ensures data consistency
+- Supports rollback on runtime exceptions
+- Can be applied at method or class level
+- Integrates with Spring AOP (Aspect-Oriented Programming)
+
+**Important Attributes**
+
+     @Transactional(
+     propagation = Propagation.REQUIRED, 
+     isolation = Isolation.READ_COMMITTED,
+     rollbackFor = Exception.class
+     )
+     public void saveEmployee(Employee emp) {
+        employeeRepository.save(emp);
+        salaryRepository.save(emp.getSalary());
+     }
+
+- Propagation → How transactions behave across methods
+- Isolation → Controls visibility of data changes
+- Rollback rules → Defines when rollback should occur
+
+**Interview Answer (Short)**
+
+**@Transactional** in Spring is used to manage database transactions. It ensures that all operations within a method are executed in a single transaction, and either all succeed (commit) or all fail (rollback). It helps maintain data consistency and supports ACID properties.
