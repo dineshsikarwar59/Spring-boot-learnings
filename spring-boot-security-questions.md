@@ -341,7 +341,7 @@ In a servlet environment, a request may pass through the filter chain multiple t
 - Dispatcher behavior
 
 OncePerRequestFilter ensures the filter logic runs only once per request lifecycle.
-
+```java
      public class JwtAuthFilter extends OncePerRequestFilter {
 
          @Override
@@ -360,6 +360,7 @@ OncePerRequestFilter ensures the filter logic runs only once per request lifecyc
               filterChain.doFilter(request, response);
              }
         }
+```
 
 **Interview Answer (Short)**
 
@@ -455,7 +456,7 @@ Spring Security protects against CSRF by generating a CSRF token.
 - If the token is missing or invalid, the request is rejected.
 
 **Example**
-
+```java
      @Bean
      SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -464,7 +465,7 @@ Spring Security protects against CSRF by generating a CSRF token.
 
            return http.build();
      }
-
+```
 **Note:** For session-based web applications, CSRF protection should generally remain enabled. It is commonly disabled only for stateless REST APIs that use JWT or another token-based authentication mechanism instead of cookies.
 
 **Advantages of CSRF Protection**
@@ -475,3 +476,426 @@ Spring Security protects against CSRF by generating a CSRF token.
 **Interview Answer (Short)**
 
 CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks an authenticated user into performing unwanted actions on another website. Spring Security prevents CSRF by using CSRF tokens, which are validated on state-changing requests. For session-based applications, CSRF protection should remain enabled, while it is commonly disabled for stateless JWT-based REST APIs.
+
+
+## 20. What is CORS?
+
+**Answer:** 
+CORS (Cross-Origin Resource Sharing) is a browser security mechanism that allows or restricts web applications from making requests to a different origin (domain, protocol, or port) than the one from which the application was loaded.
+
+By default, browsers block cross-origin requests due to the Same-Origin Policy. CORS allows the server to explicitly specify which origins are permitted.
+
+**Example**
+
+Frontend:
+
+      http://localhost:3000
+
+Backend:
+
+      http://localhost:8080
+
+Since the ports are different, these are different origins. Without CORS configuration, the browser blocks the request.
+
+**Enable CORS in Spring Boot**
+
+Using @CrossOrigin:
+```java
+          @RestController
+          @CrossOrigin(origins = "http://localhost:3000")
+          public class EmployeeController {
+
+             @GetMapping("/employees")
+             public List<Employee> getEmployees() {
+                 return employeeService.findAll();
+             }
+         }
+```
+Or configure it globally:
+
+```java
+         @Configuration
+         public class CorsConfig implements WebMvcConfigurer {
+
+             @Override
+             public void addCorsMappings(CorsRegistry registry) {
+                 registry.addMapping("/**")
+                           .allowedOrigins("http://localhost:3000")
+                           .allowedMethods("GET", "POST", "PUT", "DELETE");
+             }
+         }
+```
+
+**Advantages**
+- Allows secure communication between different origins.
+- Enables frontend and backend applications hosted on different domains or ports to communicate.
+- Prevents unauthorized cross-origin access.
+
+**Interview Answer (Short):** 
+CORS (Cross-Origin Resource Sharing) is a browser security feature that allows or restricts requests from one origin to another. By default, browsers block cross-origin requests due to the Same-Origin Policy. In Spring Boot, CORS can be enabled using @CrossOrigin or by configuring it globally with WebMvcConfigurer.
+
+
+## 21. Explain Method Level Security
+
+**Answer:** Method Level Security is a Spring Security feature that allows you to secure individual methods based on user roles or permissions, instead of securing only URLs.
+
+It is commonly implemented using annotations such as:
+
+- **@PreAuthorize** – Checks authorization **before** the method is executed using Spring Expression Language (SpEL).
+- **@PostAuthorize** – Checks authorization **after** the method executes, allowing access based on the returned object.
+- **@Secured** – Restricts access based on one or more specified roles.
+- **@RolesAllowed** – A JSR-250 annotation used to allow access only to users with specified roles.
+
+**Enable Method Security**
+
+```java
+@Configuration
+@EnableMethodSecurity
+public class SecurityConfig {
+}
+```
+**Example** using @PreAuthorize
+```java
+@Service
+public class EmployeeService {
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteEmployee(Long id) {
+        // delete logic
+    }
+}
+```
+
+**Other Annotations**
+
+@Secured
+
+```java
+@Secured("ROLE_ADMIN")
+public void deleteEmployee(Long id) {
+}
+```
+@RolesAllowed
+```java
+@RolesAllowed("ADMIN")
+public void deleteEmployee(Long id) {
+}
+```
+@PostAuthorize
+
+Checks authorization after the method executes.
+```java
+@PostAuthorize("returnObject.username == authentication.name")
+public User getUser(Long id) {
+    return userRepository.findById(id).get();
+}
+```
+
+**Advantages**
+- Secures business logic at the service layer.
+- Provides fine-grained access control.
+- Reduces dependency on URL-based security.
+- Supports Spring Expression Language (SpEL) with @PreAuthorize and @PostAuthorize.
+
+**Interview Answer (Short)** 
+Method Level Security allows you to secure individual methods using annotations such as **@PreAuthorize**, **@PostAuthorize**, **@Secured**, and **@RolesAllowed**. It provides fine-grained access control based on user roles or permissions. To enable it, use **@EnableMethodSecurity** in the security configuration.
+
+
+
+## 22. Difference between hasRole() and hasAuthority()
+
+**Answer:** 
+Both hasRole() and hasAuthority() are used in Spring Security to control access, but they differ in how they interpret roles and authorities.
+
+**Example**
+
+Using hasRole():
+```java
+@PreAuthorize("hasRole('ADMIN')")
+public void deleteEmployee() {
+}
+```
+Using hasAuthority():
+```java
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+public void deleteEmployee() {
+}
+```
+Or for a custom permission:
+```java
+@PreAuthorize("hasAuthority('READ_PRIVILEGE')")
+public List<Employee> getEmployees() {
+}
+```
+**When to Use**
+- **hasRole()** → When your application uses roles such as ADMIN, USER, or MANAGER.
+- **hasAuthority()** → When you need fine-grained permissions such as READ_PRIVILEGE, WRITE_PRIVILEGE, or DELETE_PRIVILEGE.
+
+**Interview Answer (Short)**
+
+hasRole() is used to check roles and automatically prefixes the value with ROLE_. For example, hasRole("ADMIN") checks for ROLE_ADMIN. hasAuthority() checks the exact authority or permission without adding any prefix, making it suitable for both roles and fine-grained permissions like READ_PRIVILEGE or WRITE_PRIVILEGE.
+
+
+## 23. What is AuthenticationManager?
+
+**Answer:**
+
+AuthenticationManager is the main interface in Spring Security responsible for authenticating users.
+
+It receives an authentication request (such as a username and password), delegates the authentication process to an appropriate AuthenticationProvider, and returns an authenticated Authentication object if the credentials are valid.
+```text
+User Login
+     │
+     ▼
+AuthenticationManager
+     │
+     ▼
+AuthenticationProvider
+     │
+     ▼
+UserDetailsService
+     │
+     ▼
+Database / In-Memory User Store
+     │
+     ▼
+PasswordEncoder
+     │
+     ▼
+Authentication Success
+```
+
+**Example**
+```java
+@Autowired
+private AuthenticationManager authenticationManager;
+
+public void authenticate(String username, String password) {
+
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(username, password)
+        );
+
+    // Authentication successful
+}
+```
+
+**How it Works**
+- User submits username and password.
+- AuthenticationManager receives the authentication request.
+- It delegates authentication to an AuthenticationProvider.
+- The AuthenticationProvider uses UserDetailsService to load the user.
+- PasswordEncoder verifies the password.
+- If the credentials are valid, an authenticated Authentication object is returned; otherwise, an exception is thrown.
+
+**Advantages**
+- Centralizes authentication logic.
+- Supports multiple authentication mechanisms.
+- Works with custom AuthenticationProvider implementations.
+- Integrates seamlessly with Spring Security.
+
+**Interview Answer (Short)**
+
+AuthenticationManager is the core Spring Security interface responsible for authenticating users. It receives the authentication request, delegates it to an AuthenticationProvider, and returns an authenticated Authentication object if the credentials are valid. It is the main entry point for authentication in Spring Security.
+
+
+## 24. What is AuthenticationProvider?
+
+**Answer:**
+AuthenticationProvider is a Spring Security interface responsible for validating user credentials during authentication.
+
+It is called by the AuthenticationManager to authenticate the user.
+
+**Responsibilities**
+
+- Validates the username and password.
+- Uses UserDetailsService to load user information.
+- Uses PasswordEncoder to verify the password.
+- Returns an authenticated Authentication object if authentication succeeds.
+- Throws an exception if authentication fails.
+
+**Example**
+```java
+@Component
+public class CustomAuthenticationProvider implements AuthenticationProvider {
+
+    @Override
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException {
+
+        String username = authentication.getName();
+        String password = authentication.getCredentials().toString();
+
+        // Validate credentials
+
+        return new UsernamePasswordAuthenticationToken(
+                username,
+                password,
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return UsernamePasswordAuthenticationToken.class
+                .isAssignableFrom(authentication);
+    }
+}
+```
+
+**Interview Answer (Short)**
+
+AuthenticationProvider is a Spring Security interface that performs the actual authentication by validating user credentials. It is called by the AuthenticationManager, uses UserDetailsService to load user details and PasswordEncoder to verify the password, and returns an authenticated Authentication object if the credentials are valid.
+
+
+## 25. Explain SecurityContextHolder.
+
+**Answer:**
+Stores authenticated user.
+
+**Example**
+```java
+Authentication auth =
+SecurityContextHolder.getContext().getAuthentication();
+```
+Used throughout request lifecycle.
+
+
+## 26. How do you secure Microservices?
+
+### Answer
+
+Securing microservices involves implementing authentication, authorization, encrypted communication, and secure service-to-service interactions.
+
+**Best Practices**
+
+- **JWT (JSON Web Token)** – Use stateless token-based authentication for securing APIs.
+- **OAuth2** – Implement secure authentication and authorization using OAuth2 providers.
+- **API Gateway** – Route requests through an API Gateway to enforce authentication, authorization, rate limiting, and logging.
+- **HTTPS** – Encrypt all client-to-service and service-to-service communication using TLS.
+- **Mutual TLS (mTLS)** – Use client and server certificates for secure service-to-service authentication when required.
+- **Role-Based Authorization** – Control access to resources using user roles and permissions.
+- **Service-to-Service Authentication** – Authenticate communication between microservices using JWT, OAuth2, or mTLS.
+- **Token Validation at Gateway/Resource Server** – Validate JWT tokens at the API Gateway or Resource Server before forwarding requests to backend services.
+
+
+## 27. How do you secure REST APIs?
+
+**Answer:** 
+Securing REST APIs involves implementing authentication, authorization, encryption, and protection against common security vulnerabilities.
+
+**Best Practices**
+
+- **HTTPS Only** – Encrypt all client-server communication using TLS/SSL.
+- **JWT (JSON Web Token)** – Use stateless token-based authentication for secure API access.
+- **BCrypt Passwords** – Store passwords securely using the BCrypt hashing algorithm.
+- **OAuth2** – Use OAuth2 for secure authentication and authorization, especially with third-party identity providers.
+- **Input Validation** – Validate and sanitize all user inputs to prevent SQL Injection, XSS, and other attacks.
+- **Rate Limiting** – Limit the number of requests from clients to prevent abuse and denial-of-service attacks.
+- **CORS (Cross-Origin Resource Sharing)** – Configure CORS to allow requests only from trusted origins.
+- **CSRF Disabled (for Stateless APIs)** – Disable CSRF protection for JWT-based stateless APIs since they do not rely on server-side sessions.
+- **Exception Handling** – Return standardized error responses without exposing sensitive implementation details.
+- **Token Expiry** – Use short-lived access tokens to reduce the impact of token compromise.
+- **Refresh Tokens** – Use long-lived refresh tokens to securely obtain new access tokens without requiring users to log in again.
+
+
+## 28. Explain Session Management
+
+**Answer:** 
+Session Management is the process of maintaining a user's authenticated state across multiple HTTP requests.
+
+Since HTTP is stateless, Spring Security uses a session (typically JSESSIONID) to remember that a user has already been authenticated.
+
+**How Session Management Works**
+
+1. User logs in with a username and password.
+2. Spring Security authenticates the user.
+3. The server creates an HTTP session.
+4. A session ID (JSESSIONID) is sent to the browser as a cookie.
+5. The browser includes the session ID in subsequent requests.
+6. Spring Security uses the session to identify the authenticated user.
+
+**Session Creation Policy**
+- ALWAYS
+- IF_REQUIRED
+- NEVER
+- STATELESS
+
+Spring Security provides different session creation policies:
+```java
+http.sessionManagement(session -> session
+    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+);
+```
+**Interview Answer (Short)**
+
+Session Management is the process of maintaining a user's authenticated state across multiple HTTP requests. After successful login, Spring Security creates an HTTP session and sends a JSESSIONID cookie to the client. For subsequent requests, the browser sends this cookie, allowing the server to recognize the user. For JWT-based REST APIs, SessionCreationPolicy.STATELESS is typically used, so no server-side session is created.
+
+
+## 29. What is the difference between Stateful and Stateless Authentication?
+
+**Answer:**
+
+Stateful authentication stores user session information on the server, whereas stateless authentication stores authentication data in a token (such as JWT) that is sent with every request.
+
+| **Stateful Authentication** | **Stateless Authentication** |
+|-----------------------------|------------------------------|
+| Session is stored on the server | No server-side session is maintained |
+| Uses **JSESSIONID** (or similar session ID) | Uses **JWT (JSON Web Token)** |
+| Higher server memory usage | More scalable since no session storage is required |
+| Best suited for traditional web applications | Best suited for REST APIs and microservices |
+
+**Summary**
+
+- **Stateful Authentication**
+  - Stores session data on the server.
+  - Requires session management.
+  - Ideal for traditional web applications.
+
+- **Stateless Authentication**
+  - Stores user information inside a signed token (JWT).
+  - Every request carries the token for authentication.
+  - Ideal for distributed systems, REST APIs, and microservices due to better scalability.
+
+
+
+## 30. What security best practices have you implemented in production?
+
+A strong answer for a senior developer:
+
+- Used BCryptPasswordEncoder for password hashing.
+- Implemented JWT with short-lived access tokens and refresh tokens.
+- Enabled HTTPS in all environments.
+- Configured role-based and method-level authorization.
+- Used SecurityFilterChain with custom JWT filters.
+- Disabled CSRF for stateless APIs and configured CORS appropriately.
+- Secured secrets using environment variables or a secret management solution.
+- Added centralized exception handling for authentication and authorization failures.
+- Implemented audit logging for login and sensitive operations.
+- Applied API rate limiting and input validation.
+- Performed regular dependency updates to address security vulnerabilities.
+
+
+### Scenario-Based Questions
+
+## Q: A JWT token is stolen. How can you reduce the risk?
+
+- Use HTTPS.
+- Keep access tokens short-lived.
+- Use refresh token rotation.
+- Store tokens securely (avoid local storage when possible; consider secure, HttpOnly cookies where appropriate).
+- Implement token revocation or blacklisting if required.
+- Monitor and log suspicious activity.
+
+## Q: Why do you use OncePerRequestFilter for JWT validation?
+
+It guarantees the filter executes only once for each HTTP request, preventing duplicate token validation and ensuring the authenticated user is set in the security context before authorization.
+
+## Q: How do you allow public endpoints while securing the rest?
+```java
+http.authorizeHttpRequests(auth -> auth
+    .requestMatchers("/login", "/register").permitAll()
+    .anyRequest().authenticated()
+);
+```
