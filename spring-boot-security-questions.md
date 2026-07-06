@@ -431,3 +431,47 @@ CSRF (Cross-Site Request Forgery) is a web security attack in which a malicious 
 
 The browser automatically includes the user's session cookies, causing the server to treat the request as legitimate.
 
+**Example**
+1. A user logs into their **banking application**.
+2. Without logging out, the user visits a **malicious website**.
+3. The malicious site silently submits a hidden request such as:
+
+```http
+POST /transfer
+amount=10000
+to=attacker
+```
+
+4. The browser automatically includes the user's **session cookie** with the request.
+5. If **CSRF protection is not enabled**, the banking application treats the request as legitimate and processes the money transfer.
+
+**How Spring Security Prevents CSRF**
+
+Spring Security protects against CSRF by generating a CSRF token.
+
+- The server generates a unique CSRF token.
+- The client sends the token with each state-changing request (POST, PUT, PATCH, DELETE).
+- The server validates the token before processing the request.
+- If the token is missing or invalid, the request is rejected.
+
+**Example**
+
+     @Bean
+     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+           http
+               .csrf(csrf -> csrf.disable()); // Commonly disabled for stateless JWT APIs
+
+           return http.build();
+     }
+
+**Note:** For session-based web applications, CSRF protection should generally remain enabled. It is commonly disabled only for stateless REST APIs that use JWT or another token-based authentication mechanism instead of cookies.
+
+**Advantages of CSRF Protection**
+- Prevents unauthorized actions on behalf of authenticated users.
+- Protects against forged requests.
+- Enabled by default in Spring Security for session-based applications.
+
+**Interview Answer (Short)**
+
+CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks an authenticated user into performing unwanted actions on another website. Spring Security prevents CSRF by using CSRF tokens, which are validated on state-changing requests. For session-based applications, CSRF protection should remain enabled, while it is commonly disabled for stateless JWT-based REST APIs.
