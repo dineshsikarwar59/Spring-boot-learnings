@@ -326,4 +326,108 @@ Else
        401 Unauthorized
 
 
+## 14. What is OncePerRequestFilter?
+
+**Answer:**
+OncePerRequestFilter is a Spring Security filter base class that ensures a filter is executed only once per HTTP request, even if the request is forwarded or included multiple times within the application.
+
+It is commonly used in JWT authentication, logging, and request preprocessing.
+
+**Why it is used?**
+
+In a servlet environment, a request may pass through the filter chain multiple times due to:
+- Forwarding
+- Including other resources
+- Dispatcher behavior
+
+OncePerRequestFilter ensures the filter logic runs only once per request lifecycle.
+
+     public class JwtAuthFilter extends OncePerRequestFilter {
+
+         @Override
+         protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+                                    throws ServletException, IOException {
+
+               String token = request.getHeader("Authorization");
+
+               if (token != null && token.startsWith("Bearer ")) {
+                   token = token.substring(7);
+                   // validate token and set authentication
+               }
+
+              filterChain.doFilter(request, response);
+             }
+        }
+
+**Interview Answer (Short)**
+
+OncePerRequestFilter is a Spring Security base filter class that ensures a filter is executed only once per HTTP request, even if the request is forwarded or dispatched multiple times. It is commonly used in JWT authentication and request preprocessing to avoid duplicate filter execution.
+
+## 15. Explain OAuth2
+
+**Answer:** 
+
+OAuth 2.0 is an authorization framework that allows a user to grant a third-party application limited access to their resources without sharing their password.
+It is commonly used for social login (Google, GitHub, Facebook) and secure API access.
+
+**Note:** OAuth 2.0 is for authorization. It is often combined with OpenID Connect (OIDC) to provide authentication.
+
+**Example**
+
+A user clicks "Sign in with Google":
+- User is redirected to Google.
+- User logs in and grants permission.
+- Google returns an authorization code.
+- The application exchanges the code for an access token.
+- The access token is used to access the user's profile or other permitted resources.
+
+**Advantages**
+- No need to share user passwords with third-party applications.
+- Secure access using access tokens.
+- Supports Single Sign-On (SSO).
+- Widely used for REST APIs and social login.
+
+**Interview Answer (Short)**
+
+OAuth 2.0 is an authorization framework that allows users to grant third-party applications limited access to their resources without sharing their passwords. It works by issuing access tokens after user consent. OAuth2 is widely used for social login and securing REST APIs, and is commonly combined with OpenID Connect (OIDC) for authentication.
+
+
+## 16. Difference between OAuth2 and JWT
+
+**Answer:**
+
+OAuth2 and JWT are related but serve different purposes.
+
+- **OAuth2** is an authorization framework that defines how access is granted.
+- **JWT (JSON Web Token)** is a token format used to securely transmit information between parties.
+
+A common misconception is that they are alternatives. In practice, OAuth2 often uses JWT as the access token format, although OAuth2 can also use opaque tokens.
+
+
+## 17. What is a Refresh Token?
+
+**Answer:**
+
+A Refresh Token is a long-lived token used to obtain a new Access Token when the current Access Token expires, without requiring the user to log in again.
+This improves both security and user experience.
+
+**How it Works**
+
+1. User logs in successfully.
+2. **Server issues two tokens:**
+   - **Access Token** – Short-lived token used to access protected APIs.
+   - **Refresh Token** – Long-lived token used to obtain a new Access Token.
+3. Client uses the Access Token to access protected APIs.
+4. When the Access Token expires, the client sends the Refresh Token to the server.
+5. If the Refresh Token is valid, the server issues a new Access Token.
+
+
+## 18. Explain CSRF
+
+**Answer:** 
+CSRF (Cross-Site Request Forgery) is a web security attack in which a malicious website tricks a logged-in user into sending an unwanted request to another website where they are already authenticated.
+
+The browser automatically includes the user's session cookies, causing the server to treat the request as legitimate.
 
