@@ -158,3 +158,10 @@ Popular service discovery tools include Netflix Eureka, HashiCorp Consul, and Ap
 
 In short, Service Discovery helps microservices find, connect to, and communicate with each other automatically in a scalable and reliable way.
 
+
+## 8. Client-side vs Server-side Discovery.
+
+**Answer:**
+Summary:
+- Client-side discovery: Client is responsible for finding services and choosing instances.
+- Server-side discovery: A gateway or load balancer handles service discovery and routing.
