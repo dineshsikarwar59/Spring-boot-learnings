@@ -77,27 +77,33 @@ Each service can scale independently.
 ## 5. How do Microservices communicate?
 
 **Answer:** 
-Microservices communicate with each other using APIs and messaging systems. Since each service is independent, communication mechanisms allow them to exchange data and perform operations.
-**In short:**  Microservices communicate through lightweight protocols to enable independent, scalable, and loosely coupled services.
+Microservices communicate using different communication patterns based on the application's requirements. The three main communication patterns are:
 
-**1. Synchronous Communication**
-In **synchronous communication**, one service sends a request to another service and waits until it receives a response before continuing its operation.
+### 1. Synchronous Communication
+- Uses RESTful APIs or web services for request-response communication.
+- The client waits for the service to respond before continuing.
+- Simple to implement but can create tighter coupling between services.
+- Best suited for real-time requests and workflow-specific operations.
 
- **Common Methods**
-- **REST APIs (HTTP/HTTPS)** – Services communicate using HTTP requests and responses. It is one of the most commonly used methods for service-to-service communication.
-- **gRPC** – A high-performance communication framework that uses Protocol Buffers for faster and efficient communication between services.
+### 2. Asynchronous Communication
+- Uses message queues or message brokers (such as RabbitMQ or Amazon SQS).
+- Services send messages without waiting for an immediate response.
+- Improves reliability, as messages are delivered even if a service is temporarily unavailable or under heavy load.
+- Ideal for long-running, high-load, or unpredictable processes.
 
-**2. Asynchronous Communication:** 
-In asynchronous communication, a service sends a message without waiting for an immediate response.
+### 3. Data Streaming
+- Used for continuous, real-time data exchange between services.
+- Suitable for applications that process high-frequency data, such as stock market updates, IoT systems, or real-time analytics.
+- Common technologies include Apache Kafka and AWS Kinesis.
 
-**Common methods:**
-- Message queues
-- Event brokers
+**Conclusion:**
 
-**Examples include:**
-- RabbitMQ
-- Apache Kafka
-- Amazon SQS
+Microservices communicate through:
+- **Synchronous communication** (REST APIs)
+- **Asynchronous communication** (Message Queues)
+- **Data Streaming** (Apache Kafka, AWS Kinesis)
+
+The choice depends on factors such as response time, scalability, reliability, and business requirements.
 
 
 ## 6. What is API Gateway?
@@ -165,3 +171,101 @@ In short, Service Discovery helps microservices find, connect to, and communicat
 Summary:
 - Client-side discovery: Client is responsible for finding services and choosing instances.
 - Server-side discovery: A gateway or load balancer handles service discovery and routing.
+
+
+## 9.Why should every microservice have its own database?
+
+**Answer:** 
+Each microservice should have its own database because it supports the core principles of independence, loose coupling, and autonomy. Here are the main reasons:
+
+1. **Independent Development and Deployment**
+    - Each microservice can evolve its database schema without affecting other services.
+    - Teams can deploy updates independently.
+2. **Loose Coupling**
+    - Services communicate through APIs rather than directly accessing each other's databases.
+    - This reduces dependencies between services.
+3. **Technology Flexibility**
+    - Each service can choose the database that best suits its needs (polyglot persistence).
+    - For example, one service might use MySQL, while another uses MongoDB.
+4. **Better Scalability**
+    - Databases can be scaled independently based on the workload of each microservice.
+    - High-traffic services won't affect the performance of others.
+5. **Improved Fault Isolation**
+    - If one database fails, only the corresponding microservice is impacted.
+    - Other services continue to operate normally.
+6. **Enhanced Security**
+    - Access to data is restricted to the owning microservice.
+    - This prevents unauthorized direct access by other services.
+7. **Clear Data Ownership**
+    - Each microservice owns and manages its own data.
+    - This avoids conflicts and maintains data consistency within the service.
+
+**Conclusion:** 
+Having a separate database for each microservice ensures service autonomy, scalability, flexibility, fault isolation, and maintainability, making the overall microservices architecture more robust and easier to manage.
+
+## 10. 5. REST vs gRPC
+
+**Answer:**
+
+| Feature | REST | gRPC |
+|---------|------|------|
+| **Protocol** | HTTP/1.1 (commonly) | HTTP/2 |
+| **Data Format** | JSON | Protocol Buffers (Protobuf) |
+| **Performance** | Slower due to larger JSON payloads | Faster with compact binary data |
+| **Communication** | Request–response | Supports unary, client streaming, server streaming, and bidirectional streaming |
+| **Ease of Use** | Easy to understand and widely supported | Requires Protobuf definitions and code generation |
+| **Browser Support** | Excellent | Limited (typically requires gRPC-Web) |
+| **Best For** | Public APIs, web and mobile applications | Internal microservice communication and high-performance systems |
+
+### Key Differences
+
+- **REST** is simple, human-readable, and ideal for public APIs because it uses JSON over HTTP.
+- **gRPC** is faster and more efficient because it uses Protocol Buffers (Protobuf) and HTTP/2, making it well-suited for communication between microservices.
+- **REST** is easier to test with tools like **Postman**, whereas **gRPC** requires generated client and server code.
+
+### Conclusion
+
+- Use **REST** for external/public APIs and applications that require broad compatibility.
+- Use **gRPC** for internal microservice communication where high performance, low latency, and efficient data transfer are important.
+
+
+## 8. What is Circuit Breaker?
+
+**Answer:** 
+A **Circuit Breaker** is a design pattern used in microservices to prevent repeated requests to a failing service. It improves fault tolerance by stopping calls to an unavailable service and allowing it time to recover.
+
+**How It Works**
+
+The Circuit Breaker has three states:
+ 1. **Closed**
+    - Requests are sent to the target service normally.
+    - If failures exceed a predefined threshold, the circuit moves to the **Open** state.
+
+ 2. **Open**
+    - Requests are blocked immediately without calling the failing service.
+    - This prevents unnecessary load and gives the service time to recover.
+
+ 3. **Half-Open**
+    - After a timeout period, a limited number of test requests are allowed.
+    - If the requests succeed, the circuit moves back to **Closed**.
+    - If the requests fail, it switches back to **Open**.
+
+**Benefits**
+
+- Prevents cascading failures across microservices.
+- Improves system reliability and resilience.
+- Reduces unnecessary network calls to failed services.
+- Enables faster recovery by avoiding overloaded services.
+
+**Example:** 
+Suppose the **Order Service** calls the **Payment Service**. If the Payment Service becomes unavailable, the Circuit Breaker opens after repeated failures and immediately returns an error or fallback response instead of repeatedly attempting failed requests.
+
+**Common Circuit Breaker Libraries**
+
+- **Resilience4j** (recommended for Java/Spring Boot)
+- **Netflix Hystrix** (legacy, now in maintenance mode)
+- **Spring Cloud Circuit Breaker**
+
+**Conclusion**
+
+A **Circuit Breaker** is a resilience pattern that detects service failures, temporarily stops requests to failing services, and automatically resumes communication once the service recovers.
