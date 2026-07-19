@@ -378,3 +378,13 @@ Key Points:
 **Interview Answer (Short):**
 
 @Controller is used for Spring MVC applications that return view pages. @RestController is a combination of @Controller and @ResponseBody, so all methods return data directly in the HTTP response, making it ideal for RESTful APIs.
+
+## 24. What is @ResponseBody?
+**Answer:** 
+@ResponseBody is a Spring annotation.
+- It converts Java objects into JSON/XML format.
+- It is mainly used in REST APIs to return data instead of returning a view.
+- Automatically included in: @RestController
+
+**Interview Answer (Short):** 
+@ResponseBody converts a Java object into JSON (or other formats) and sends it directly as the HTTP response. It is automatically included in @RestController, so we don't need to add it separately.
