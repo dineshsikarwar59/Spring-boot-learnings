@@ -259,3 +259,122 @@ Common approaches:
 - **Implement rate limiting** – Control the number of requests from clients to prevent overload.
 - **Use load balancing** – Distribute incoming requests across multiple servers to improve scalability and availability.
 - **Reduce unnecessary data using DTOs (Data Transfer Objects)** – Send only the required fields instead of returning complete database objects.
+
+## 14. Describe the role of HTTP headers in RESTful web services.
+
+**Answer:**
+HTTP headers play a crucial role in RESTful web services by providing meta-information about the request or response. They can include details such as content type, content length, authentication credentials, caching directives, and more.
+
+For example, the Content-Type header indicates the media type of the resource (e.g., JSON, XML), while the Authorization header is used to pass authentication credentials. Headers like Cache-Control and ETag help manage caching and resource versioning.
+
+## 15. How do you version a REST API, and why is it necessary?
+**Answer:** 
+Versioning is necessary to manage changes without disrupting existing clients. It allows developers to introduce new features and improvements while maintaining support for older versions.
+
+- **URI Versioning:** Including the version number in the URI (e.g., /api/v1/resource).
+- **Header Versioning:** Specifying the version number in a custom HTTP header (e.g., X-API-Version: 1).
+- **Query Parameter Versioning:** Adding the version number as a query parameter (e.g., /api/resource?version=1).
+
+## 16. How would you handle caching in a REST API to improve performance?
+**Answer:**
+- **Client-side caching:** Using HTTP headers like Cache-Control and ETag to allow clients to cache responses locally
+- **Server-side caching:** Implementing caching layers on the server to store frequently accessed data
+- **Content Delivery Networks (CDNs):** Utilizing CDNs to cache and serve static resources closer to the client
+
+## 17. What is the difference between URI and URL in the context of REST APIs?
+**Answer:** 
+In REST APIs, URI (Uniform Resource Identifier) and URL (Uniform Resource Locator) are related concepts, but they are not the same.
+
+Key Points:
+- **URI** = Identifies a resource.
+- **URL** = Locates and provides the method to access a resource.
+
+Every URL is a URI, but not every URI is a URL.
+
+Example:
+- **URI**: /products/25
+- **URL**: https://shop.example.com/products/25
+  
+**Conclusion:** In REST APIs, the term URI is commonly used when referring to resource identifiers, while URL is used when referring to the complete web address that clients use to access those resources.
+
+## 18. What is the difference between statelessness and statefulness in the context of REST APIs?
+**Answer:**
+- **Statelessness** is a key principle of REST APIs, meaning that each request from a client to a server must contain all the information needed to understand and process the request. The server doesn't store any client context between requests. Each request is treated as an independent transaction, unrelated to any previous requests.
+- **Statefulness**, on the other hand, involves the server keeping track of the client's state across multiple requests. This might involve storing session information or remembering the client's previous actions. Statefulness means the server maintains client session information across multiple requests, making interactions dependent on stored state but increasing the complexity of scaling and session management.
+
+
+## 19. How do you handle global exceptions?
+**Answer:** 
+
+Using @ControllerAdvice and @ExceptionHandler to provide consistent error responses across all APIs.
+
+## 20. What is the difference between 401 and 403?
+**Answer:**
+
+- **401:** User is not authenticated.
+- **403:** User is authenticated but does not have permission.
+
+## 21. What is ResponseEntity?
+**Answer:** 
+ResponseEntity is a Spring Framework class used to represent the complete HTTP response in a REST API. It allows us to control the response body, HTTP status code, and HTTP headers that are sent back to the client.
+
+```java
+return ResponseEntity
+       .status(HttpStatus.CREATED)
+       .body(employee);
+```
+
+For example, instead of always returning a default 200 OK response, we can return 201 Created, 404 Not Found, or 500 Internal Server Error based on the request outcome.
+
+```java
+@GetMapping("/user/{id}")
+public ResponseEntity<String> getUser(@PathVariable int id) {
+    if (id == 1) {
+        return ResponseEntity.ok("User Found");
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .body("User Not Found");
+    }
+}
+```
+
+Key points
+- It provides full control over the HTTP response.
+- It allows us to set status codes, headers, and response body.
+- It is commonly used in Spring Boot REST APIs to return meaningful responses to clients.
+- It improves API design by making responses more RESTful and flexible.
+
+## 22. How do you validate REST request?
+**Answer:** 
+REST requests are validated in Spring Boot using Bean Validation (JSR-380/Jakarta Validation) with annotations such as @NotNull, @NotBlank, @Size, @Email, and @Min. The @Valid annotation is used in the controller to trigger validation.
+
+```java
+public class User {
+    @NotBlank
+    private String name;
+
+    @Email
+    private String email;
+}
+
+@PostMapping("/users")
+public ResponseEntity<String> createUser(@Valid @RequestBody User user) {
+    return ResponseEntity.ok("User created");
+}
+```
+Key Points:
+
+- Use validation annotations (@NotNull, @NotBlank, @Size, etc.).
+- Use @Valid on the request body or request parameters.
+- Return appropriate error responses (e.g., 400 Bad Request) when validation fails.
+
+## 23. Difference between @Controller and @RestController?
+**Answer:**
+
+- **@Controller** = Used to return views (HTML/JSP/Thymeleaf).
+- **@RestController** = Used to return REST API responses (JSON/XML/Text).
+- **@RestController** = @Controller + @ResponseBody
+
+**Interview Answer (Short):**
+
+@Controller is used for Spring MVC applications that return view pages. @RestController is a combination of @Controller and @ResponseBody, so all methods return data directly in the HTTP response, making it ideal for RESTful APIs.
