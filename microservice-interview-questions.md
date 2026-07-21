@@ -172,14 +172,14 @@ Summary:
 - Client-side discovery: Client is responsible for finding services and choosing instances.
 - Server-side discovery: A gateway or load balancer handles service discovery and routing.
 
-1. In Client-Side DiscoveryThe User Service does all the detective work.
-   - Step 1: The User Service asks the Service Registry: "Where are all the active instances of the Order Service?"
-   - Step 2: The Registry replies with a list of IP addresses (e.g., Instance 1: 10.0.0.5, Instance 2: 10.0.0.6).
-   - Step 3: The User Service picks one IP (e.g., Instance 1) and sends the request directly to that specific Order Service instance.
+1. **In Client-Side Discovery** The User Service does all the detective work.
+   - **Step 1:** The User Service asks the Service Registry: "Where are all the active instances of the Order Service?"
+   - **Step 2:** The Registry replies with a list of IP addresses (e.g., Instance 1: 10.0.0.5, Instance 2: 10.0.0.6).
+   - **Step 3:** The User Service picks one IP (e.g., Instance 1) and sends the request directly to that specific Order Service instance.
 
-2. In Server-Side DiscoveryThe User Service remains completely blind to where the Order Service actually lives.
-   - Step 1: The User Service simply sends a request to a central Load Balancer/Router: "Hey, get this request to the Order Service."
-   - Step 2: The Load Balancer looks at its registry, finds an active Order Service instance, and forwards the request for you.
+2. **In Server-Side Discovery** The User Service remains completely blind to where the Order Service actually lives.
+   - **Step 1:** The User Service simply sends a request to a central Load Balancer/Router: "Hey, get this request to the Order Service."
+   - **Step 2:** The Load Balancer looks at its registry, finds an active Order Service instance, and forwards the request for you.
 
 
 ## 9.Why should every microservice have its own database?
