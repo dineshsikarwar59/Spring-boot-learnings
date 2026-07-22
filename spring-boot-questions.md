@@ -424,6 +424,15 @@ Microservices communicate with each other using synchronous or asynchronous comm
 - **Consul** – A service mesh and discovery tool that provides service registration, health checking, and key-value storage.
 
 
+## 34. What is Spring Boot’s WebClient, and how does it differ from RestTemplate?**
+
+- **RestTemplate:** RestTemplate is blocking and synchronous, which means the calling thread waits for the HTTP response before moving on.
+RestTemplate is more straightforward for simpler, traditional applications that don't require reactive features.
+
+- **WebClient:** WebClient is non-blocking, meaning it allows asynchronous, non-blocking calls, and is more suitable for high-performance, scalable applications. 
+WebClient is ideal for reactive applications and environments where performance is crucial, particularly when making multiple concurrent HTTP requests
+
+
 ## Frequently Asked Scenario-Based Questions (Spring Boot / Microservices)
 
 ### 1. A REST API suddenly becomes slow. How would you investigate it?
