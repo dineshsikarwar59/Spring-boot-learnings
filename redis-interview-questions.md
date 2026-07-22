@@ -781,13 +781,11 @@ Redis Cluster provides both **horizontal scaling** and **high availability**.
 
 
 ---
-## 10. Can you discuss some common Redis commands and their uses?
+## 11. Can you discuss some common Redis commands and their uses?
 
 Redis provides a rich set of commands for working with different data types. Below are some of the most commonly used commands and their typical use cases.
 
----
-
-## 1. String Commands
+#### 1. String Commands
 
 Strings are the simplest and most commonly used Redis data type.
 
@@ -807,9 +805,7 @@ GET username
 INCR pageViews
 ```
 
----
-
-## 2. Hash Commands
+#### 2. Hash Commands
 
 Hashes store field-value pairs, similar to Java objects or JSON documents.
 
@@ -828,9 +824,7 @@ HSET user:1 age 25
 HGETALL user:1
 ```
 
----
-
-## 3. List Commands
+#### 3. List Commands
 
 Lists maintain an ordered collection of elements.
 
@@ -850,9 +844,7 @@ RPUSH tasks "Task2"
 LRANGE tasks 0 -1
 ```
 
----
-
-## 4. Set Commands
+#### 4. Set Commands
 
 Sets store unique, unordered values.
 
@@ -870,9 +862,7 @@ SADD skills Java Python Java
 SMEMBERS skills
 ```
 
----
-
-## 5. Sorted Set (ZSet) Commands
+#### 5. Sorted Set (ZSet) Commands
 
 Sorted Sets store unique elements with associated scores.
 
@@ -891,9 +881,7 @@ ZADD leaderboard 200 Bob
 ZRANGE leaderboard 0 -1 WITHSCORES
 ```
 
----
-
-## 6. Key Management Commands
+#### 6. Key Management Commands
 
 Commands for managing Redis keys.
 
@@ -912,9 +900,7 @@ EXPIRE session:user1 3600
 TTL session:user1
 ```
 
----
-
-## 7. Pub/Sub Commands
+#### 7. Pub/Sub Commands
 
 Redis supports real-time messaging using the Publish/Subscribe model.
 
@@ -930,9 +916,7 @@ PUBLISH news "New product launched"
 SUBSCRIBE news
 ```
 
----
-
-## 8. Transaction Commands
+#### 8. Transaction Commands
 
 Redis supports atomic execution of multiple commands.
 
@@ -951,9 +935,7 @@ DECRBY balance 100
 EXEC
 ```
 
----
-
-## 9. Stream Commands (Redis 5+)
+#### 9. Stream Commands (Redis 5+)
 
 Streams are designed for high-throughput event and message processing.
 
@@ -971,9 +953,7 @@ XADD orders * customer "John" product "Laptop"
 XREAD STREAMS orders 0
 ```
 
----
-
-## Summary
+#### Summary
 
 | Data Type | Common Commands | Typical Use Cases |
 |-----------|-----------------|-------------------|
@@ -999,7 +979,7 @@ XREAD STREAMS orders 0
 > - **Transactions** → Atomic operations
 
 
-
+---
 
 ## 11. Can you explain the concept of Redis Pub/Sub and give an example of when you might use it?
 
@@ -1012,11 +992,10 @@ In this model:
 - Redis immediately delivers the message to **all active subscribers**.
 - Messages are **not stored**, so subscribers that are offline will miss them.
 
----
 
-## How Redis Pub/Sub Works
+### How Redis Pub/Sub Works
 
-### 1. Publisher
+#### 1. Publisher
 
 A publisher sends a message to a channel using the `PUBLISH` command.
 
@@ -1024,9 +1003,7 @@ A publisher sends a message to a channel using the `PUBLISH` command.
 PUBLISH news "New product launched!"
 ```
 
----
-
-### 2. Subscriber
+#### 2. Subscriber
 
 A subscriber listens for messages from a channel using the `SUBSCRIBE` command.
 
@@ -1036,9 +1013,8 @@ SUBSCRIBE news
 
 Whenever a message is published to the **news** channel, all subscribed clients receive it instantly.
 
----
 
-### 3. Message Delivery
+#### 3. Message Delivery
 
 Redis delivers messages immediately to all connected subscribers.
 
@@ -1049,9 +1025,8 @@ Redis delivers messages immediately to all connected subscribers.
 - ❌ No message persistence
 - ❌ Offline subscribers do not receive missed messages
 
----
 
-## Pub/Sub Architecture
+### Pub/Sub Architecture
 
 ```text
                 Publisher
@@ -1071,7 +1046,7 @@ Redis delivers messages immediately to all connected subscribers.
 
 ---
 
-## Common Use Cases
+#### Common Use Cases
 
 | Use Case | Description | Example |
 |----------|-------------|---------|
@@ -1083,7 +1058,7 @@ Redis delivers messages immediately to all connected subscribers.
 
 ---
 
-## Example: Chat Application
+#### Example: Chat Application
 
 Imagine a chat room named **general**.
 
@@ -1115,9 +1090,7 @@ Both users instantly receive:
 "Hello everyone!"
 ```
 
----
-
-## Advantages
+### Advantages
 
 - ⚡ Extremely fast and lightweight
 - 📡 Real-time communication
@@ -1127,7 +1100,7 @@ Both users instantly receive:
 
 ---
 
-## Limitations
+### Limitations
 
 - Messages are **not persisted**.
 - Offline subscribers miss published messages.
@@ -1136,9 +1109,8 @@ Both users instantly receive:
 
 > **Note:** If you need **message persistence**, acknowledgments, or replay of messages, consider using **Redis Streams** instead of Pub/Sub.
 
----
 
-## Pub/Sub vs Redis Streams
+### Pub/Sub vs Redis Streams
 
 | Feature | Redis Pub/Sub | Redis Streams |
 |---------|---------------|---------------|
@@ -1149,9 +1121,8 @@ Both users instantly receive:
 | Message Acknowledgment | ❌ No | ✅ Yes |
 | Best For | Live notifications, chat | Reliable event processing, message queues |
 
----
 
-## Key Takeaway
+### Key Takeaway
 
 Redis Pub/Sub is ideal for **real-time communication** where **speed is more important than reliability**.
 
@@ -1163,12 +1134,13 @@ Redis Pub/Sub is ideal for **real-time communication** where **speed is more imp
 - **Redis Pub/Sub** → **Fast, real-time, but no message persistence** 🚀
 
 
+---
 
 ## 12. How would you go about implementing a simple rate limiter using Redis?
 
 A **rate limiter** controls how many requests a user or client can make within a specific time period.
 
-### Example
+#### Example
 
 > Allow a user to make a maximum of **10 API requests per minute**.
 
@@ -1179,104 +1151,9 @@ Redis is a great choice for rate limiting because it provides:
 - ⏱️ Built-in expiration using TTL
 - 🌐 Ability to handle high concurrent traffic
 
----
+### Spring Boot Implementation
 
-# Approach 1: Fixed Window Rate Limiter
-
-This is the simplest and most commonly used approach.
-
-## Concept
-
-For each user:
-
-1. Create a Redis key.
-
-Example:
-
-```text
-rate_limit:user123
-```
-
-2. Increment the counter for every request.
-
-3. Set an expiration time for the key.
-
-4. If the counter exceeds the allowed limit, reject the request.
-
----
-
-## Step-by-Step Logic
-
-When a request arrives:
-
-```redis
-INCR rate_limit:user123
-```
-
-If this is the first request:
-
-```redis
-EXPIRE rate_limit:user123 60
-```
-
-Then check the counter:
-
-```
-Count <= Limit  → Allow request
-Count > Limit   → Reject request (HTTP 429)
-```
-
----
-
-## Redis Command Example
-
-Assume:
-
-- Limit = 5 requests
-- Time window = 10 seconds
-
-First request:
-
-```redis
-INCR user:123:requests
-```
-
-Response:
-
-```
-(integer) 1
-```
-
-Since this is the first request:
-
-```redis
-EXPIRE user:123:requests 10
-```
-
-After 6 requests:
-
-```redis
-INCR user:123:requests
-```
-
-Response:
-
-```
-(integer) 6
-```
-
-Since the limit is 5:
-
-```
-Request rejected
-HTTP 429 Too Many Requests
-```
-
----
-
-# Spring Boot Implementation
-
-## RateLimiterService
+#### RateLimiterService
 
 ```java
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -1316,9 +1193,8 @@ public class RateLimiterService {
 }
 ```
 
----
 
-## Controller Example
+#### Controller Example
 
 ```java
 import org.springframework.http.ResponseEntity;
@@ -1346,85 +1222,6 @@ public class ApiController {
         return ResponseEntity.ok("Success");
     }
 }
-```
-
----
-
-# Approach 2: Sliding Window Rate Limiter
-
-The fixed window approach has a limitation:
-
-A user can send many requests at the boundary of two windows.
-
-Example:
-
-```
-Window 1:
-09:00:50 - 5 requests
-
-Window 2:
-09:01:00 - 5 requests
-```
-
-The user effectively sends 10 requests in 10 seconds.
-
-## How Sliding Window Works
-
-Redis Sorted Sets (`ZSET`) can store request timestamps.
-
-Steps:
-
-1. Add current timestamp.
-
-```redis
-ZADD requests timestamp requestId
-```
-
-2. Remove old requests.
-
-```redis
-ZREMRANGEBYSCORE requests -inf oldTimestamp
-```
-
-3. Count remaining requests.
-
-```redis
-ZCARD requests
-```
-
-4. Allow or reject based on the limit.
-
-### Advantages
-
-✅ More accurate  
-✅ Prevents boundary bursts  
-
-### Disadvantage
-
-❌ Requires more Redis operations
-
----
-
-# Approach 3: Token Bucket Algorithm
-
-The token bucket approach is commonly used for high-performance APIs.
-
-## Concept
-
-- A bucket contains tokens.
-- Each request consumes one token.
-- Tokens are refilled at a fixed rate.
-- Requests are rejected when no tokens are available.
-
-Example:
-
-```
-Bucket Capacity = 100 tokens
-
-Request → Remove 1 token
-
-Refill:
-10 tokens per second
 ```
 
 ### Used For
@@ -1467,7 +1264,7 @@ Check Redis Counter
 > - **Token Bucket** → Control traffic flow smoothly 🚀
 
 
-
+---
 
 ## 13. What are Redis transactions? How do they differ from traditional database transactions?
 
@@ -1475,173 +1272,8 @@ Redis transactions allow a group of Redis commands to be executed as a **single 
 
 However, Redis transactions are **not the same as traditional RDBMS transactions** because they do not provide full ACID guarantees such as rollback and strong consistency enforcement.
 
----
 
-# How Redis Transactions Work
-
-Redis transactions are built around these commands:
-
-## 1. MULTI
-
-Starts a transaction.
-
-After `MULTI`, commands are not executed immediately. They are added to a queue.
-
-```redis
-MULTI
-```
-
----
-
-## 2. Command Queueing
-
-Commands after `MULTI` are queued.
-
-Example:
-
-```redis
-MULTI
-
-SET account:1 "1000"
-DECRBY account:1 100
-
-```
-
-Redis stores these commands until execution.
-
----
-
-## 3. EXEC
-
-Executes all queued commands in order.
-
-```redis
-EXEC
-```
-
-Redis guarantees that once execution begins, no other client's commands can run in between.
-
----
-
-## 4. DISCARD
-
-Cancels the transaction and clears the queued commands.
-
-```redis
-DISCARD
-```
-
----
-
-## 5. WATCH (Optimistic Locking)
-
-`WATCH` monitors one or more keys.
-
-If a watched key changes before `EXEC`, Redis aborts the transaction.
-
-Example:
-
-```redis
-WATCH balance
-
-MULTI
-DECRBY balance 100
-EXEC
-```
-
-This provides **check-and-set (CAS)** behavior.
-
----
-
-# Redis Transaction Example
-
-```redis
-MULTI
-
-SET product:1:stock 100
-DECR product:1:stock
-
-EXEC
-```
-
-Execution:
-
-```
-Command 1 → SET stock
-Command 2 → DECR stock
-
-Both execute together in order.
-```
-
----
-
-# What Redis Transactions Guarantee
-
-### ✅ Atomic Execution
-
-All commands inside `EXEC` are executed sequentially without interruption.
-
-Example:
-
-```
-Client A Transaction:
-    SET A
-    SET B
-
-Client B cannot execute commands between SET A and SET B.
-```
-
----
-
-### ❌ No Rollback
-
-Redis does not undo previous commands if a later command fails.
-
-Example:
-
-```redis
-MULTI
-
-SET balance 100
-INVALID_COMMAND
-
-EXEC
-```
-
-Redis does not restore the previous state automatically.
-
----
-
-### Error Handling
-
-Redis handles errors differently:
-
-### Queue-Time Error
-
-Example: Invalid command syntax.
-
-Result:
-
-```
-Transaction is aborted.
-```
-
----
-
-### Runtime Error
-
-Example: Wrong data type operation.
-
-Result:
-
-```
-Failed command returns an error,
-but other commands continue executing.
-```
-
----
-
-# Redis Transactions vs Traditional Database Transactions
+#### Redis Transactions vs Traditional Database Transactions
 
 | Feature | Redis Transactions | Traditional DB Transactions (MySQL/PostgreSQL) |
 |---------|-------------------|-----------------------------------------------|
@@ -1653,50 +1285,18 @@ but other commands continue executing.
 | **Concurrency Control** | Uses optimistic locking with `WATCH` | Uses locks, MVCC, and row versioning |
 | **Complex Queries** | Not supported | Supports joins and complex operations |
 
----
 
-# Redis Transactions Use Cases
+#### Redis Transactions Use Cases
 
 Redis transactions are useful for:
 
 ✅ Atomic counter updates
 
-Example:
-
-```redis
-MULTI
-INCR user:100:points
-INCR leaderboard:updates
-EXEC
-```
-
----
-
 ✅ Updating multiple related Redis keys
-
-Example:
-
-```
-Update user balance
-Update transaction status
-Update audit counter
-```
-
----
 
 ✅ Optimistic concurrency using `WATCH`
 
-Example:
-
-```
-Read value
-Check if unchanged
-Update safely
-```
-
----
-
-# When Not to Use Redis Transactions
+#### When Not to Use Redis Transactions
 
 Avoid Redis transactions for:
 
@@ -1705,9 +1305,7 @@ Avoid Redis transactions for:
 ❌ Financial transactions requiring strict ACID guarantees  
 ❌ Multi-step processes needing strong consistency  
 
----
-
-# Key Takeaway
+#### Key Takeaway
 
 Redis transactions are:
 
@@ -1725,7 +1323,7 @@ They are best suited for **small atomic operations**, counters, and optimistic c
 > **RDBMS Transaction = ACID + Rollback + Strong Consistency**
 
 
-
+---
 
 ## 14. Explain the concept of Redis pipelining and when you might use it.
 
@@ -1733,125 +1331,14 @@ Redis **pipelining** is a performance optimization technique where a client send
 
 The main goal of pipelining is to **reduce network round-trip time** and improve throughput.
 
----
-
-# How Redis Pipelining Works
-
-## Without Pipelining (Normal Request Flow)
-
-For each command:
-
-```text
-Client  →  Redis: SET key1 value1
-Client  ←  Redis: OK
-
-Client  →  Redis: SET key2 value2
-Client  ←  Redis: OK
-
-Client  →  Redis: GET key1
-Client  ←  Redis: value1
-```
-
-Each command requires a separate network round trip.
-
----
-
-## With Pipelining
-
-Multiple commands are sent together:
-
-```text
-Client
-  |
-  | SET key1 value1
-  | SET key2 value2
-  | GET key1
-  |
-  ▼
-Redis processes all commands
-  |
-  ▼
-Returns all responses together
-```
-
-This avoids repeated network delays.
-
----
-
-# Why Redis Pipelining Improves Performance
+#### Why Redis Pipelining Improves Performance
 
 Redis commands execute very quickly, but network latency can become the bottleneck.
 
-### Example Without Pipelining
 
-Assume:
+### When to Use Redis Pipelining
 
-```
-1 network round trip = 1 ms
-```
-
-For 1000 commands:
-
-```
-1000 commands × 1 ms = 1000 ms
-```
-
-Total time ≈ **1 second**
-
----
-
-### Example With Pipelining
-
-1000 commands sent together:
-
-```
-1000 commands ≈ 1-2 network round trips
-```
-
-Total time ≈ **a few milliseconds**
-
-Result:
-
-- 🚀 Higher throughput
-- ⚡ Lower latency
-- 📉 Fewer network calls
-
----
-
-# Example Redis Pipeline
-
-Instead of:
-
-```redis
-SET user:1 "John"
-SET user:2 "Alex"
-SET user:3 "Sam"
-```
-
-Send them as one pipeline batch:
-
-```text
-Pipeline:
-    SET user:1 "John"
-    SET user:2 "Alex"
-    SET user:3 "Sam"
-```
-
-Redis executes:
-
-```
-SET user:1
-SET user:2
-SET user:3
-```
-
-and returns all responses together.
-
----
-
-# When to Use Redis Pipelining
-
-## 1. Bulk Data Operations
+#### 1. Bulk Data Operations
 
 Useful when performing many Redis operations together.
 
@@ -1864,7 +1351,7 @@ Examples:
 
 ---
 
-## 2. Reducing Network Latency
+#### 2. Reducing Network Latency
 
 Especially useful when Redis is running remotely.
 
@@ -1882,9 +1369,7 @@ Application Server
 
 Pipelining reduces the number of network round trips.
 
----
-
-## 3. Batch Read and Write Operations
+### 3. Batch Read and Write Operations
 
 When an application processes many keys at once.
 
@@ -1896,9 +1381,7 @@ Update 1000 counters
 Store multiple cache entries
 ```
 
----
-
-## 4. High-Volume Event Processing
+### 4. High-Volume Event Processing
 
 Useful for systems that ingest large numbers of events.
 
@@ -1909,9 +1392,7 @@ Examples:
 - Event ingestion pipelines
 - Analytics processing
 
----
-
-# Redis Pipelining vs Transactions
+### Redis Pipelining vs Transactions
 
 | Feature | Redis Pipelining | Redis Transactions |
 |---------|------------------|-------------------|
@@ -1923,9 +1404,8 @@ Examples:
 | Performance | Very high | Lower than pipeline |
 | Use Case | Bulk operations | Small atomic updates |
 
----
 
-# What Redis Pipelining Is Not
+### What Redis Pipelining Is Not
 
 Pipelining does **not** provide:
 
@@ -1934,40 +1414,24 @@ Pipelining does **not** provide:
 ❌ Rollback  
 ❌ Isolation from other clients  
 
-Example:
 
-```
-Client A Pipeline:
-    INCR counter
-    GET counter
-
-Client B:
-    INCR counter
-```
-
-Commands from other clients may execute between pipeline commands.
-
----
-
-# When to Use Transactions Instead
+### When to Use Transactions Instead
 
 Use:
 
-### Redis Transactions (`MULTI/EXEC`)
+#### Redis Transactions (`MULTI/EXEC`)
 When you need:
 
 - Atomic execution
 - Multiple commands treated as one operation
 
-### Lua Scripts
+#### Lua Scripts
 When you need:
 
 - Complex atomic logic
 - Server-side execution
 
----
-
-# Key Takeaway
+### Key Takeaway
 
 Redis pipelining is designed for **performance optimization**, not data consistency.
 
@@ -1978,7 +1442,7 @@ Redis pipelining is designed for **performance optimization**, not data consiste
 
 
 
-
+---
 
 ## 15. What is the purpose of Redis Sentinel, and how does it work?
 
@@ -1986,13 +1450,12 @@ Redis pipelining is designed for **performance optimization**, not data consiste
 
 Its main purpose is to ensure that Redis applications continue working with minimal downtime.
 
----
 
-# Purpose of Redis Sentinel
+### Purpose of Redis Sentinel
 
 Redis Sentinel provides four main capabilities:
 
-## 1. Monitoring
+#### 1. Monitoring
 
 Sentinel continuously monitors:
 
@@ -2002,15 +1465,14 @@ Sentinel continuously monitors:
 
 It checks whether Redis servers are responding correctly.
 
----
 
-## 2. Failure Detection
+#### 2. Failure Detection
 
 When a primary node stops responding, Sentinel detects the failure.
 
 Redis uses two failure states:
 
-### Subjectively Down (SDOWN)
+**Subjectively Down (SDOWN)**
 
 A single Sentinel believes the primary is unavailable.
 
@@ -2022,9 +1484,8 @@ Sentinel A → Primary not responding
 
 The failure is considered local to that Sentinel.
 
----
 
-### Objectively Down (ODOWN)
+**Objectively Down (ODOWN)**
 
 Multiple Sentinels agree that the primary is unavailable.
 
@@ -2038,9 +1499,7 @@ Sentinel C ┘
 
 This prevents false failure detection.
 
----
-
-## 3. Automatic Failover
+#### 3. Automatic Failover
 
 When a primary is declared **ODOWN**, Sentinel automatically:
 
@@ -2071,9 +1530,7 @@ After failover:
  Replica 1      Replica 2
 ```
 
----
-
-## 4. Configuration Provider
+### 4. Configuration Provider
 
 Applications do not need to store the primary Redis address permanently.
 
@@ -2087,11 +1544,10 @@ Sentinel returns the current primary host and port.
 
 If failover occurs, clients automatically discover the new primary.
 
----
 
-# How Redis Sentinel Works
+### How Redis Sentinel Works
 
-## Step 1: Multiple Sentinel Instances Run
+#### Step 1: Multiple Sentinel Instances Run
 
 Multiple Sentinel processes monitor the Redis deployment.
 
@@ -2109,9 +1565,8 @@ Sentinel 2 ---- Redis Primary ---- Replica 1
 
 Multiple Sentinels provide reliable failure detection.
 
----
 
-## Step 2: Health Checking
+#### Step 2: Health Checking
 
 Sentinels periodically send health checks.
 
@@ -2127,9 +1582,8 @@ If the primary does not respond within the configured time:
 Primary → SDOWN
 ```
 
----
 
-## Step 3: Sentinel Consensus
+#### Step 3: Sentinel Consensus
 
 Sentinels communicate with each other.
 
@@ -2141,9 +1595,8 @@ SDOWN → ODOWN
 
 The quorum requirement avoids unnecessary failovers.
 
----
 
-## Step 4: Leader Election
+#### Step 4: Leader Election
 
 Sentinels elect one Sentinel to manage the failover process.
 
@@ -2153,9 +1606,8 @@ The selected Sentinel:
 - Promotes it
 - Coordinates the recovery process
 
----
 
-## Step 5: Replica Promotion
+#### Step 5: Replica Promotion
 
 The selected Sentinel promotes a replica:
 
@@ -2171,9 +1623,8 @@ Other replicas are updated:
 REPLICAOF new-primary-ip 6379
 ```
 
----
 
-## Step 6: Client Notification
+#### Step 6: Client Notification
 
 Applications connected through Sentinel discover the new primary automatically.
 
@@ -2190,9 +1641,8 @@ Response:
 6379
 ```
 
----
 
-# Why Redis Sentinel Is Important
+#### Why Redis Sentinel Is Important
 
 | Requirement | How Sentinel Helps |
 |-------------|--------------------|
@@ -2202,9 +1652,8 @@ Response:
 | **Master Discovery** | Clients always find the current primary |
 | **Production Reliability** | Supports distributed Redis deployments |
 
----
 
-# Redis Sentinel Limitations
+#### Redis Sentinel Limitations
 
 | Limitation | Explanation |
 |------------|-------------|
@@ -2213,9 +1662,8 @@ Response:
 | Requires Multiple Sentinels | A single Sentinel is not recommended for production |
 | Limited Cluster Management | Redis Cluster is required for large-scale sharding |
 
----
 
-# Redis Sentinel vs Redis Cluster
+#### Redis Sentinel vs Redis Cluster
 
 | Feature | Redis Sentinel | Redis Cluster |
 |---------|----------------|---------------|
@@ -2225,9 +1673,8 @@ Response:
 | Multiple Primaries | ❌ No | ✅ Yes |
 | Large Dataset Scaling | Limited | Excellent |
 
----
 
-# Key Takeaway
+#### Key Takeaway
 
 Redis Sentinel provides:
 
@@ -2247,7 +1694,7 @@ It ensures Redis applications remain available even when a primary node fails.
 
 
 
-
+---
 
 ## 17. What are Redis Lua scripts, and why might you use them?
 
@@ -2260,9 +1707,8 @@ Redis executes Lua scripts using:
 - `EVAL` → Execute a Lua script directly
 - `EVALSHA` → Execute a previously loaded script using its SHA hash
 
----
 
-# What Are Redis Lua Scripts?
+### What Are Redis Lua Scripts?
 
 Redis provides an embedded Lua interpreter that allows you to write custom scripts.
 
@@ -2280,15 +1726,13 @@ ARGV[1] → increment value (5)
 
 Result:
 counter is increased by 5
-```
 
 The entire script executes as one atomic operation.
 
----
 
-# Why Use Redis Lua Scripts?
+### Why Use Redis Lua Scripts?
 
-## 1. Atomic Operations for Complex Logic
+#### 1. Atomic Operations for Complex Logic
 
 Lua scripts execute atomically:
 
@@ -2324,9 +1768,8 @@ Lua Script:
 
 The entire operation happens as one atomic unit.
 
----
 
-## 2. Reduce Network Round Trips
+#### 2. Reduce Network Round Trips
 
 Without Lua:
 
@@ -2344,7 +1787,6 @@ Redis
 
 Multiple requests travel between the application and Redis.
 
----
 
 With Lua:
 
@@ -2366,7 +1808,7 @@ Benefits:
 
 ---
 
-## 3. Reusable Server-Side Logic
+#### 3. Reusable Server-Side Logic
 
 Scripts can be loaded into Redis and executed using their SHA identifier.
 
@@ -2394,9 +1836,8 @@ Advantages:
 - Faster execution
 - Centralized logic
 
----
 
-## 4. Extend Redis Functionality
+#### 4. Extend Redis Functionality
 
 Lua scripts allow custom operations that are not available as built-in Redis commands.
 
@@ -2408,9 +1849,8 @@ Examples:
 - Complex validation logic
 - Custom scoring algorithms
 
----
 
-# Common Redis Lua Script Use Cases
+### Common Redis Lua Script Use Cases
 
 | Use Case | How Lua Helps |
 |----------|---------------|
@@ -2422,35 +1862,8 @@ Examples:
 | **Leaderboard Logic** | Perform custom scoring operations |
 | **Inventory Management** | Prevent overselling by updating stock atomically |
 
----
 
-# Example: Simple Atomic Counter
-
-Lua script:
-
-```lua
-local current = redis.call("GET", KEYS[1])
-
-if current == false then
-    redis.call("SET", KEYS[1], 1)
-else
-    redis.call("INCR", KEYS[1])
-end
-
-return redis.call("GET", KEYS[1])
-```
-
-Execution:
-
-```redis
-EVAL script 1 page_views
-```
-
-The read and update happen atomically.
-
----
-
-# Redis Lua Scripts vs Transactions
+### Redis Lua Scripts vs Transactions
 
 | Feature | Lua Scripts | Redis Transactions |
 |---------|-------------|-------------------|
@@ -2461,9 +1874,8 @@ The read and update happen atomically.
 | Rollback | ❌ No | ❌ No |
 | Race Condition Prevention | ✅ Strong | ✅ With WATCH |
 
----
 
-# Advantages of Redis Lua Scripts
+### Advantages of Redis Lua Scripts
 
 | Benefit | Description |
 |---------|-------------|
@@ -2473,21 +1885,19 @@ The read and update happen atomically.
 | **Efficient** | Reduces network communication |
 | **Reliable** | Prevents race conditions |
 
----
 
-# Caveats
+### Caveats
 
 Although Lua scripts are powerful, keep these points in mind:
 
-### 1. Keep Scripts Short
+#### 1. Keep Scripts Short
 
 Redis executes scripts in a single thread.
 
 A long-running script can block other Redis operations.
 
----
 
-### 2. Scripts Should Be Deterministic
+#### 2. Scripts Should Be Deterministic
 
 Scripts should produce predictable results.
 
@@ -2497,9 +1907,8 @@ Avoid:
 - External dependencies
 - Time-based logic without control
 
----
 
-### 3. Resource Usage
+#### 3. Resource Usage
 
 Large scripts may consume CPU and memory.
 
@@ -2509,9 +1918,8 @@ Redis controls execution time using:
 lua-time-limit
 ```
 
----
 
-# Key Takeaway
+### Key Takeaway
 
 Redis Lua scripts allow you to run **custom, atomic, server-side logic**.
 
@@ -2527,7 +1935,7 @@ They are useful when you need:
 > **Lua Script = Custom Redis Command + Atomic Execution + Better Performance** 🚀
 
 
-
+---
 
 ## 21. Describe a scenario where you'd choose Redis Hashes over Strings, and why.
 
@@ -2538,61 +1946,23 @@ The main difference is:
 - **String** → Stores one value under one key.
 - **Hash** → Stores multiple field-value pairs under a single key, similar to an object or dictionary.
 
----
 
-# Strings vs Hashes
+#### Strings vs Hashes
 
 | Data Type | Characteristics |
 |-----------|----------------|
 | **String** | Stores a single value (text, number, JSON, binary data) up to 512 MB |
 | **Hash** | Stores multiple fields and values under one Redis key |
 
----
 
-# Scenario: Storing User Profiles
-
-Imagine an application that stores user information:
-
-```json
-{
-  "id": 123,
-  "name": "Alice",
-  "email": "alice@example.com",
-  "age": 25,
-  "city": "New York"
-}
-```
-
----
-
-# Option 1: Store User as a String (JSON)
-
-Redis key:
-
-```text
-user:123
-```
-
-Value:
-
-```json
-{
-  "name": "Alice",
-  "email": "alice@example.com",
-  "age": 25,
-  "city": "New York"
-}
-```
-
-## Advantages
+#### Advantages
 
 ✅ Simple storage  
 ✅ Easy to serialize and deserialize  
 ✅ Good when the entire object is always read together  
 
----
 
-## Disadvantages
+#### Disadvantages
 
 If only the city needs to change:
 
@@ -2622,7 +1992,7 @@ This creates unnecessary reads and writes.
 
 ---
 
-# Option 2: Store User as a Redis Hash
+#### Option 2: Store User as a Redis Hash
 
 Redis key:
 
@@ -2786,7 +2156,7 @@ SET cache:homepage "<html>...</html>"
 
 
 
-
+---
 
 ## 22. How can Redis Lists be used to implement a simple job queue?
 
