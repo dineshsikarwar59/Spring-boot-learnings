@@ -2171,7 +2171,7 @@ A Redis List can act as a **FIFO (First-In-First-Out)** queue by adding jobs fro
 
 ---
 
-# Why Use Redis Lists for Job Queues?
+### Why Use Redis Lists for Job Queues?
 
 | Feature | Benefit |
 |---------|---------|
@@ -2180,9 +2180,8 @@ A Redis List can act as a **FIFO (First-In-First-Out)** queue by adding jobs fro
 | **Blocking Operations** | Workers can wait for jobs without continuous polling |
 | **Simple Design** | No additional message broker setup required |
 
----
 
-# Basic Queue Workflow
+#### Basic Queue Workflow
 
 ```
 Producer
@@ -2202,75 +2201,8 @@ Example:
 Producer → Redis Queue → Worker
 ```
 
----
 
-# 1. Producer: Adding Jobs to the Queue
-
-Use `LPUSH` to add jobs.
-
-```redis
-LPUSH job_queue "job1"
-LPUSH job_queue "job2"
-LPUSH job_queue "job3"
-```
-
-Redis List:
-
-```text
-job3
-job2
-job1
-```
-
-`LPUSH` adds items to the left side of the list.
-
----
-
-# 2. Consumer: Processing Jobs
-
-Use `RPOP` to remove jobs from the right side.
-
-```redis
-RPOP job_queue
-```
-
-Processing order:
-
-```text
-job1 → job2 → job3
-```
-
-This creates FIFO behavior:
-
-```
-First Added → First Processed
-```
-
----
-
-# 3. Blocking Queue Consumption
-
-Instead of continuously checking the queue:
-
-```redis
-RPOP job_queue
-```
-
-Use:
-
-```redis
-BRPOP job_queue 0
-```
-
-`BRPOP`:
-
-- Waits until a job is available.
-- Avoids unnecessary polling.
-- Uses `0` for unlimited waiting.
-
----
-
-# Spring Boot Implementation Example
+### Spring Boot Implementation Example
 
 ```java
 import org.springframework.data.redis.core.RedisTemplate;
@@ -2320,153 +2252,7 @@ public class JobQueueService {
 }
 ```
 
----
-
-# Example Flow
-
-### Add jobs:
-
-```redis
-LPUSH job_queue "Send Email"
-LPUSH job_queue "Generate Report"
-LPUSH job_queue "Process Payment"
-```
-
-Queue:
-
-```text
-Process Payment
-Generate Report
-Send Email
-```
-
----
-
-### Worker consumes:
-
-```redis
-BRPOP job_queue 0
-```
-
-Processing:
-
-```
-Send Email
-       ↓
-Generate Report
-       ↓
-Process Payment
-```
-
----
-
-# Important Considerations
-
-## 1. Atomicity
-
-Redis list operations are atomic.
-
-Example:
-
-```redis
-LPUSH job_queue "task1"
-```
-
-and:
-
-```redis
-RPOP job_queue
-```
-
-can safely run from multiple clients.
-
----
-
-## 2. Blocking vs Non-Blocking Consumers
-
-### Non-blocking:
-
-```redis
-RPOP job_queue
-```
-
-Returns immediately.
-
-Good for:
-
-- Occasional processing
-- Simple workers
-
----
-
-### Blocking:
-
-```redis
-BRPOP job_queue 0
-```
-
-Waits for jobs.
-
-Good for:
-
-- Background workers
-- Continuous processing
-
----
-
-## 3. Persistence
-
-Redis can persist queue data using:
-
-- RDB snapshots
-- AOF logs
-
-Without persistence:
-
-```
-Redis restart → queued jobs may be lost
-```
-
----
-
-## 4. Failed Job Handling
-
-For production systems:
-
-- Move failed jobs to a dead-letter queue.
-- Track retry counts.
-- Store job status.
-
-Example:
-
-```
-job_queue
-    |
-    ▼
-Worker
-    |
-    ├── Success → Completed
-    |
-    └── Failure → dead_letter_queue
-```
-
----
-
-## 5. Queue Size Management
-
-Large queues can consume memory.
-
-Possible solutions:
-
-```redis
-LTRIM job_queue 0 1000
-```
-
-Keeps only the required number of jobs.
-
----
-
-# Advantages of Redis List Queues
+### Advantages of Redis List Queues
 
 | Feature | Benefit |
 |---------|---------|
@@ -2475,9 +2261,8 @@ Keeps only the required number of jobs.
 | Blocking operations | Efficient worker implementation |
 | Lightweight | No separate queue infrastructure |
 
----
 
-# When to Use Redis List Queues
+### When to Use Redis List Queues
 
 Good for:
 
@@ -2490,9 +2275,7 @@ Good for:
 
 For more advanced requirements such as message acknowledgment, replay, and consumer groups, Redis Streams or dedicated brokers like Kafka/RabbitMQ may be more suitable.
 
----
-
-# Key Takeaway
+### Key Takeaway
 
 Redis Lists provide a simple and efficient way to build a job queue:
 
@@ -2524,7 +2307,7 @@ Worker
 
 
 
-
+---
 
 
 ## 27. How can Redis Streams be used for real-time data processing?
@@ -2539,9 +2322,8 @@ Redis Streams are commonly used for:
 - IoT data ingestion
 - Microservices communication
 
----
 
-# 1. What Are Redis Streams?
+### 1. What Are Redis Streams?
 
 A Redis Stream stores a sequence of events.
 
@@ -2549,20 +2331,6 @@ Each stream entry contains:
 
 - **ID** → Automatically generated unique identifier
 - **Fields** → Key-value pairs containing event data
-
-Example event:
-
-```
-Stream: user_actions
-
-ID:
-1640995200000-0
-
-Fields:
-user_id = 123
-action  = click
-page    = home
-```
 
 Redis Stream commands:
 
@@ -2575,9 +2343,7 @@ Redis Stream commands:
 | `XACK` | Acknowledge processed messages |
 | `XTRIM` | Limit stream size |
 
----
-
-# 2. Real-Time Processing Scenario
+### 2. Real-Time Processing Scenario
 
 Consider an e-commerce application.
 
@@ -2609,60 +2375,13 @@ Requirements:
 
 Redis Streams are designed for this.
 
----
-
-# 3. Producing Events
+### 3. Producing Events
 
 Applications add events using `XADD`.
 
-Example:
+### 4. Consuming Events
 
-```redis
-XADD user_actions * user_id 123 action click page home
-
-XADD user_actions * user_id 124 action purchase item book
-```
-
-The `*` tells Redis to generate the event ID automatically.
-
-Example stored event:
-
-```
-1640995200000-0
-
-user_id → 123
-action  → click
-page    → home
-```
-
----
-
-# 4. Consuming Events
-
-## Simple Consumer
-
-A consumer can read events using `XREAD`.
-
-Example:
-
-```redis
-XREAD COUNT 10 BLOCK 0 STREAMS user_actions 0
-```
-
-Explanation:
-
-- `COUNT 10` → Read up to 10 messages
-- `BLOCK 0` → Wait indefinitely for new messages
-- `0` → Start reading from the beginning
-
-Useful for:
-
-- Single consumer applications
-- Simple event processing
-
----
-
-# 5. Consumer Groups
+### 5. Consumer Groups
 
 For scalable processing, Redis Streams support **consumer groups**.
 
@@ -2682,67 +2401,24 @@ Example:
 
 Each consumer receives different messages.
 
----
 
-## Create a Consumer Group
+### Read Messages Using a Consumer Group
 
-```redis
-XGROUP CREATE user_actions analytics_group 0
-```
 
----
-
-## Read Messages Using a Consumer Group
-
-```redis
-XREADGROUP GROUP analytics_group consumer1 COUNT 5 BLOCK 1000 STREAMS user_actions >
-```
-
-Explanation:
-
-- `analytics_group` → Consumer group name
-- `consumer1` → Consumer instance
-- `>` → Read only new messages
-
----
-
-## Acknowledge Processed Messages
+### Acknowledge Processed Messages
 
 After successful processing:
 
-```redis
-XACK user_actions analytics_group 1640995200000-0
-```
-
 Acknowledgment ensures reliable processing.
 
----
 
-# 6. Stream Trimming
+### 6. Stream Trimming
 
 Streams can grow continuously, so old events may need to be removed.
 
-Use:
+### 7. Spring Boot Example
 
-```redis
-XTRIM user_actions MAXLEN 10000
-```
-
-This keeps only the latest 10,000 messages.
-
-Approximate trimming:
-
-```redis
-XTRIM user_actions MAXLEN ~ 10000
-```
-
-is faster for large streams.
-
----
-
-# 7. Spring Boot Example
-
-## Producing Events
+### Producing Events
 
 ```java
 import org.springframework.data.redis.core.RedisTemplate;
@@ -2782,9 +2458,8 @@ public class UserActionStreamService {
 }
 ```
 
----
 
-## Reading Events
+### Reading Events
 
 ```java
 public List<MapRecord<String, Object, Object>> readEvents(
@@ -2807,9 +2482,7 @@ This can be extended with:
 - Message acknowledgments
 - Retry handling
 
----
-
-# Benefits of Redis Streams
+### Benefits of Redis Streams
 
 | Feature | Benefit |
 |---------|---------|
@@ -2821,9 +2494,8 @@ This can be extended with:
 | **Stream trimming** | Controls memory usage |
 | **High throughput** | Handles large volumes of events |
 
----
 
-# Redis Streams vs Redis Pub/Sub
+### Redis Streams vs Redis Pub/Sub
 
 | Feature | Redis Streams | Redis Pub/Sub |
 |---------|---------------|---------------|
@@ -2834,11 +2506,10 @@ This can be extended with:
 | Reliability | High | Low |
 | Best For | Event processing | Real-time notifications |
 
----
 
-# Common Use Cases
+### Common Use Cases
 
-## Event-Driven Microservices
+#### Event-Driven Microservices
 
 Example:
 
@@ -2855,7 +2526,7 @@ Payment  Email   Analytics
 
 ---
 
-## Real-Time Analytics
+### Real-Time Analytics
 
 Examples:
 
@@ -2863,9 +2534,8 @@ Examples:
 - Click streams
 - Metrics aggregation
 
----
 
-## IoT Data Processing
+### IoT Data Processing
 
 Examples:
 
@@ -2873,9 +2543,8 @@ Examples:
 - Device telemetry
 - Monitoring systems
 
----
 
-## Notification Systems
+### Notification Systems
 
 Examples:
 
@@ -2883,9 +2552,7 @@ Examples:
 - User notifications
 - Real-time updates
 
----
-
-# Key Takeaway
+### Key Takeaway
 
 Redis Streams provide a **reliable, scalable, append-only event log** for real-time processing.
 
@@ -2906,18 +2573,17 @@ Redis Streams provide a **reliable, scalable, append-only event log** for real-t
 
 
 
-
+---
 
 
 ## 33. How does Redis handle memory management, and what strategies would you employ to optimize memory usage?
 
 Redis is an **in-memory database**, meaning all active data is stored in RAM for extremely fast access. Because memory is the primary resource, efficient memory management is critical for Redis performance, scalability, and stability.
 
----
 
-# 1. How Redis Handles Memory
+### 1. How Redis Handles Memory
 
-## A. Data Storage in Memory
+#### A. Data Storage in Memory
 
 Redis stores:
 
@@ -2934,27 +2600,10 @@ The memory usage depends on:
 - Number of objects
 - Internal encoding
 
-Example:
-
-```redis
-SET user:1001 "Alice"
-```
-
-Memory is consumed by:
-
-```
-Key:
-user:1001
-
-Value:
-Alice
-```
-
 Redis also stores internal information about the object.
 
----
 
-# B. Internal Data Encodings
+#### B. Internal Data Encodings
 
 Redis optimizes memory by using different internal representations.
 
@@ -2978,9 +2627,7 @@ HSET user:1 name Alice age 25
 
 may use a memory-efficient encoding internally.
 
----
-
-# C. Memory Allocation
+#### C. Memory Allocation
 
 Redis uses memory allocators to manage RAM efficiently.
 
@@ -3010,9 +2657,8 @@ Allocated memory:
 
 The extra 20 MB is fragmentation overhead.
 
----
 
-# D. Key Expiration
+#### D. Key Expiration
 
 Redis supports automatic expiration using TTL.
 
@@ -3037,9 +2683,7 @@ Useful for:
 - Temporary tokens
 - Rate limits
 
----
-
-# E. Memory Eviction
+#### E. Memory Eviction
 
 When Redis reaches the configured memory limit:
 
@@ -3062,11 +2706,11 @@ Common policies:
 
 ---
 
-# F. Monitoring Memory Usage
+#### F. Monitoring Memory Usage
 
 Redis provides several commands.
 
-## Overall Memory Information
+### Overall Memory Information
 
 ```redis
 INFO memory
@@ -3081,7 +2725,7 @@ Shows:
 
 ---
 
-## Memory Usage of a Key
+### Memory Usage of a Key
 
 ```redis
 MEMORY USAGE user:123
@@ -3093,9 +2737,7 @@ Example:
 (integer) 256
 ```
 
----
-
-## Detailed Memory Statistics
+### Detailed Memory Statistics
 
 ```redis
 MEMORY STATS
@@ -3107,13 +2749,11 @@ Provides:
 - Allocator information
 - Fragmentation details
 
----
 
-# 2. Strategies to Optimize Redis Memory Usage
+### 2. Strategies to Optimize Redis Memory Usage
 
----
 
-# A. Choose Efficient Data Structures
+#### A. Choose Efficient Data Structures
 
 Selecting the correct Redis data type reduces memory usage.
 
@@ -3139,9 +2779,8 @@ Benefits:
 - Better organization
 - More efficient storage
 
----
 
-# B. Use Key Expiration (TTL)
+#### B. Use Key Expiration (TTL)
 
 Temporary data should always have expiration.
 
@@ -3159,9 +2798,8 @@ Redis automatically removes it
 
 Avoids stale data accumulation.
 
----
 
-# C. Configure the Right Eviction Policy
+#### C. Configure the Right Eviction Policy
 
 For cache workloads:
 
@@ -3181,9 +2819,8 @@ maxmemory-policy allkeys-lfu
 
 Redis removes rarely used keys.
 
----
 
-# D. Avoid Large Keys
+#### D. Avoid Large Keys
 
 Large values increase:
 
@@ -3225,9 +2862,7 @@ SET product:1:summary small_data
 
 and keep full details elsewhere.
 
----
-
-# E. Use Compression
+#### E. Use Compression
 
 Large objects can be compressed before storing.
 
@@ -3252,9 +2887,8 @@ Tradeoff:
 |---------|------|
 | Less memory usage | More CPU usage |
 
----
 
-# F. Optimize Keys
+#### F. Optimize Keys
 
 Large key names consume memory.
 
@@ -3274,9 +2908,8 @@ usr:12345
 
 For millions of keys, shorter names save significant memory.
 
----
 
-# G. Monitor Memory Regularly
+#### G. Monitor Memory Regularly
 
 Important metrics:
 
@@ -3293,13 +2926,12 @@ Monitor:
 
 High eviction counts indicate memory pressure.
 
----
 
-# H. Use Appropriate Scaling Strategies
+#### H. Use Appropriate Scaling Strategies
 
 If memory is still insufficient:
 
-## Redis Cluster
+### Redis Cluster
 
 Distributes data across multiple nodes.
 
@@ -3315,9 +2947,8 @@ Redis Node 3
 
 Each node stores part of the dataset.
 
----
 
-## Separate Cache and Persistent Data
+### Separate Cache and Persistent Data
 
 Do not store everything in Redis.
 
@@ -3334,7 +2965,7 @@ Avoid:
 
 ---
 
-# 3. Memory Optimization Workflow
+### 3. Memory Optimization Workflow
 
 A practical approach:
 
@@ -3373,7 +3004,7 @@ MEMORY USAGE
 
 ---
 
-# Summary
+### Summary
 
 Redis memory management relies on:
 
@@ -3400,7 +3031,7 @@ The best optimization strategies are:
 
 
 
-
+---
 
 ## 35. How would you implement and optimize a Redis-based caching layer for a high-traffic web application?
 
@@ -3416,7 +3047,7 @@ A good caching design involves:
 
 ---
 
-# 1. Identify What to Cache
+### 1. Identify What to Cache
 
 Not all data should be cached.
 
@@ -3438,9 +3069,9 @@ Avoid caching:
 
 ---
 
-# 2. Choose a Caching Strategy
+### 2. Choose a Caching Strategy
 
-## A. Cache-Aside (Lazy Loading)
+#### A. Cache-Aside (Lazy Loading)
 
 Most commonly used approach.
 
@@ -3482,19 +3113,19 @@ if(product == null) {
 return product;
 ```
 
-### Advantages
+#### Advantages
 
 ✅ Simple implementation  
 ✅ Avoids unnecessary cache storage  
 ✅ Works well for read-heavy applications  
 
-### Disadvantage
+#### Disadvantage
 
 Cache misses can create database spikes.
 
 ---
 
-# B. Write-Through Cache
+#### B. Write-Through Cache
 
 Every database update also updates Redis.
 
@@ -3519,7 +3150,7 @@ Disadvantages:
 
 ---
 
-# C. Write-Behind / Write-Back
+#### C. Write-Behind / Write-Back
 
 Application writes to Redis first.
 
@@ -3548,7 +3179,7 @@ Disadvantages:
 
 ---
 
-# D. Read-Through Cache
+#### D. Read-Through Cache
 
 The application always communicates with the cache layer.
 
@@ -3558,7 +3189,7 @@ Common in caching frameworks.
 
 ---
 
-# 3. Redis Key Design
+### 3. Redis Key Design
 
 Good key naming improves maintainability.
 
@@ -3597,7 +3228,7 @@ Benefits:
 
 ---
 
-# 4. Use Proper TTL Expiration
+### 4. Use Proper TTL Expiration
 
 Always set expiration for temporary cache data.
 
@@ -3624,9 +3255,9 @@ Example TTL strategy:
 
 ---
 
-# 5. Choose Efficient Redis Data Structures
+### 5. Choose Efficient Redis Data Structures
 
-## Strings
+#### Strings
 
 For simple values:
 
@@ -3636,7 +3267,7 @@ SET page:view:1000 500
 
 ---
 
-## Hashes
+#### Hashes
 
 For objects:
 
@@ -3646,7 +3277,7 @@ HSET user:123 name Alice age 25
 
 ---
 
-## Sorted Sets
+#### Sorted Sets
 
 For rankings:
 
@@ -3656,7 +3287,7 @@ ZADD leaderboard 100 player1
 
 ---
 
-## Lists
+#### Lists
 
 For queues:
 
@@ -3668,9 +3299,9 @@ Using the correct data structure reduces memory usage.
 
 ---
 
-# 6. Optimize High Traffic Performance
+### 6. Optimize High Traffic Performance
 
-## A. Use Redis Pipelining
+#### A. Use Redis Pipelining
 
 When performing many operations:
 
@@ -3704,7 +3335,7 @@ Benefits:
 
 ---
 
-# B. Configure Eviction Policies
+#### B. Configure Eviction Policies
 
 When Redis reaches maximum memory:
 
@@ -3731,9 +3362,9 @@ Common cache policies:
 
 ---
 
-# C. Prevent Cache Stampede
+### C. Prevent Cache Stampede
 
-## Problem
+#### Problem
 
 When a popular key expires:
 
@@ -3751,9 +3382,9 @@ This overloads the database.
 
 ---
 
-## Solutions
+### Solutions
 
-### 1. Randomized TTL
+#### 1. Randomized TTL
 
 Instead of:
 
@@ -3771,7 +3402,7 @@ Avoids simultaneous expiration.
 
 ---
 
-### 2. Redis Lock
+#### 2. Redis Lock
 
 Allow only one request to rebuild cache.
 
@@ -3785,7 +3416,7 @@ Only one process refreshes the cache.
 
 ---
 
-### 3. Cache Warming
+#### 3. Cache Warming
 
 Load important data before traffic peaks.
 
@@ -3798,7 +3429,7 @@ Load popular products into Redis
 
 ---
 
-# 7. Compression
+### 7. Compression
 
 Large objects can be compressed.
 
@@ -3824,11 +3455,11 @@ Tradeoff:
 
 ---
 
-# 8. Scaling Redis
+### 8. Scaling Redis
 
 For very high traffic:
 
-## Redis Cluster
+#### Redis Cluster
 
 Distributes data across nodes.
 
@@ -3850,7 +3481,7 @@ Benefits:
 
 ---
 
-## Read Replicas
+#### Read Replicas
 
 For read-heavy workloads:
 
@@ -3866,11 +3497,11 @@ Reads can be distributed.
 
 ---
 
-# 9. Monitoring Redis Cache
+### 9. Monitoring Redis Cache
 
 Important Redis metrics:
 
-## Memory
+#### Memory
 
 ```redis
 INFO memory
@@ -3884,7 +3515,7 @@ Monitor:
 
 ---
 
-## Cache Performance
+#### Cache Performance
 
 Metrics:
 
@@ -3903,7 +3534,7 @@ High hit ratio means effective caching.
 
 ---
 
-## Evictions
+#### Evictions
 
 Monitor:
 
@@ -3915,7 +3546,7 @@ High eviction rates indicate memory pressure.
 
 ---
 
-# 10. Spring Boot Redis Cache Example
+### 10. Spring Boot Redis Cache Example
 
 Dependency:
 
@@ -3984,7 +3615,7 @@ Response
 
 ---
 
-# High-Traffic Redis Caching Best Practices
+### High-Traffic Redis Caching Best Practices
 
 ✅ Cache frequently read data  
 ✅ Use cache-aside for most applications  
@@ -3999,7 +3630,7 @@ Response
 
 ---
 
-# Key Takeaway
+### Key Takeaway
 
 A high-performance Redis caching layer is built using:
 
