@@ -1992,3 +1992,12 @@ public void consume(String message) {
 - Spring Kafka manages producer and consumer configuration.
 
 ---
+
+## Q. What is ZooKeeper? Is it still required?
+
+**Answer:** 
+- Earlier Kafka versions required ZooKeeper for cluster management.
+- Modern Kafka supports KRaft (Kafka Raft) mode, which removes the dependency on ZooKeeper.
+
+------
+-----
