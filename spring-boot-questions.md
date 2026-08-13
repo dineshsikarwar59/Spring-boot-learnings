@@ -1,5 +1,22 @@
 # Spring-boot-interview questions
 
+### Table of Contents
+
+<details open>
+<summary>
+Hide/Show table of contents
+</summary>
+
+| No. | Questions                                                                                                                                                                                                                         |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     | **Basic Questions**                                                                                                                                                                                                               |
+| 1   | [What is Spring Boot?](#what-is-spring-boot)                                                                                                                                                                                       |
+| 2   | [What are the advantages of Spring Boot?](#what-are-the-advantages-of-spring-boot)  
+
+</details>
+
+
+
 ### 1. What is Spring Boot?
 
 **Answer:**
@@ -13,6 +30,7 @@ Spring Boot is an extension of the Spring Framework that simplifies application 
 
 It helps developers build standalone, production-ready applications quickly.
 
+**[⬆ Back to Top](#table-of-contents)**
 
 ### 2. What are the advantages of Spring Boot?
 
@@ -26,6 +44,8 @@ It helps developers build standalone, production-ready applications quickly.
 - Easy Microservices development
 - Externalized configuration
 - Production-ready applications
+
+**[⬆ Back to Top](#table-of-contents)**
 
 ### 3. Explain Spring Boot Auto Configuration.
 
