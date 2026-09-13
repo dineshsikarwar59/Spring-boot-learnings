@@ -1,5 +1,15 @@
 # Redis cache java interview questions 
 
+## Q. What is a cache?
+**Ans:** A cache is a temporary storage area that stores frequently accessed data for faster retrieval.
+
+## Q. Why do we use a cache?
+**Ans:** We use caching to reduce network calls, decrease response time, and improve application performance.
+
+## Q. How does a cache work?
+**Ans:** A cache stores frequently accessed data in a faster storage location, such as memory. When the same data is requested again, it can be retrieved from the cache instead of fetching it from the original source.
+
+
 ## 1. What is Redis?
 
 **Answer:**
