@@ -1,5 +1,26 @@
 # Rest-interview questions
 
+# Basic terms you should know
+
+## Q.1. What is an API?
+
+**Answer:** An API (Application Programming Interface) is a set of rules, protocols, and standards
+that allows two or more software systems to communicate and exchange data with each other.
+
+The API defines what requests you can make, how to make them, and what information you’ll receive back.
+
+## Q.2 What is web services?
+**Answer:** A web service is a software system that allows different applications to communicate and share data with each other over the internet.
+
+## Q.3 What is the difference between webservice and API?
+**Answer:** 
+
+**An API (Application Programming Interface)** is a broad set of rules that allows any two software systems to communicate, 
+while a **web service** is a specific type of API that must be accessed over a network using web protocols like HTTP.
+
+
+
+------------------------------------------------------------
 ## 1. What is REST and how does it work?
 
 **Answer:**
