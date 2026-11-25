@@ -92,12 +92,37 @@ All four are stereotype annotations in Spring. They mark a class as a Spring-man
 
 ## 5. Difference between @Controller and @RestController?
 
-**Answer:**
+**Answer:**  **@Controller** and **@RestController** both are used to handle HTTP request and return response.
 
 - **@Controller** = Used to return views (HTML/JSP/Thymeleaf).
 - **@RestController** = Used to return REST API responses (JSON/XML/Text).
 
 @RestController = @Controller + @ResponseBody
+
+```java
+@Controller
+public class UserController {
+
+    @GetMapping("/user")
+    @ResponseBody
+    public User getUser() {
+        return new User(1, "John");
+    }
+}
+```
+**Spring Boot automatically converts the Java object into JSON using an HTTP message converter (typically Jackson).**
+
+```java
+@RestController
+public class UserController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World";
+    }
+}
+```
+**This works exactly like using @Controller with @ResponseBody on every method.**
 
 **Interview Answer (Short):**
 
