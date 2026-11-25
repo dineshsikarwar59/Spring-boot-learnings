@@ -69,7 +69,7 @@ If you add the spring-boot-starter-data-jpa dependency, Spring Boot automaticall
 using default settings. You only need to provide required properties such as the database URL, username, and password, or override the defaults if you want custom behavior.
 
 **Interview Answer (Short):**
-Spring Boot Auto Configuration automatically configures the required Spring beans based on the project's dependencies, existing beans, and application properties. For example, adding spring-boot-starter-data-jpa automatically configures the DataSource, EntityManagerFactory, TransactionManager, and Hibernate, reducing the need for manual configuration.
+Spring Boot Auto Configuration automatically configures the required Spring beans based on the dependencies present in pom.xml or available in classpath.
 
 ## 4. Difference between @Component, @Service, @Repository, and @Controller?
 
