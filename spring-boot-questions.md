@@ -215,7 +215,7 @@ PUT is used to fully update a resource and replaces the entire object, while PAT
 
 **Interview Answer (Short)**
 
-**@Transactional** in Spring is used to manage database transactions. It ensures that all operations within a method are executed in a single transaction, and either all succeed (commit) or all fail (rollback). It helps maintain data consistency and supports ACID properties.
+**@Transactional** is a Spring annotation used to define transaction management at the method or class level. It ensures that a set of database operations are executed within a single transaction, either all succeed (commit) or all fail (rollback). It helps maintain data consistency and supports ACID(Atomicity, Consistency, Isolation, Durability) properties.
 
 ## 15.Propagation levels in Transaction?
 **Answer:** Transaction propagation defines how a transaction behaves when a transactional method calls another transactional method.
