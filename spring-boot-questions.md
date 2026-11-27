@@ -138,11 +138,22 @@ Types:
 
 **Interview Answer (Short):**
 
-**Dependency Injection (DI)** is a design pattern in which the Spring IOC container create and provides the required objects (dependencies) to a class.
+**Dependency Injection (DI)** is a design pattern in which Spring IOC container create and provides the required objects or dependencies.
+
+## 8. What Spring IOC Container?
+**Answers:** **Spring IoC (Inversion of Control) container** is a framework component that creates, configures, wires dependencies, and manages the lifecycle of objects instead of letting your application code do it manually.
+
+**Core Responsibilities**
+
+- • **Object creation:** Instantiates objects (often called beans in Java/Spring) using configuration metadata from XML, annotations, or code.
+- • **Dependency injection:** Automatically supplies required dependencies via constructors, setters, or fields.
+- • **Lifecycle and scope management:** Controls when objects are created, reused (such as singleton vs. prototype scopes), and destroyed.
+
+**Interview Answer (Short):** **Spring IoC Container** is a framework component that creates, configures, wires dependencies, and manages the lifecycle of objects
 
 ## 9. What is Bean Scope in Spring?
 
-**Answer:** Bean Scope in Spring defines the lifecycle and visibility of a Spring bean inside the application context. It determines how many instances of a bean are created and how long they live.
+**Answer:** Bean Scope in Spring, defines the lifecycle and visibility of a Spring bean inside the application context. It determines how many instances of a bean are created and how long they live.
 
 Spring provides different bean scopes to control the lifecycle of beans:
 
