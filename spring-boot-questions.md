@@ -138,7 +138,7 @@ Types:
 
 **Interview Answer (Short):**
 
-**Dependency Injection (DI)** is a design pattern in which the Spring Framework provides the required objects (dependencies) to a class instead of the class creating them itself.
+**Dependency Injection (DI)** is a design pattern in which the Spring IOC container create and provides the required objects (dependencies) to a class.
 
 ## 9. What is Bean Scope in Spring?
 
