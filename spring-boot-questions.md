@@ -200,11 +200,7 @@ PUT is used to fully update a resource and replaces the entire object, while PAT
 **Important Attributes**
 
 ```java
-     @Transactional(
-     propagation = Propagation.REQUIRED, 
-     isolation = Isolation.READ_COMMITTED,
-     rollbackFor = Exception.class
-     )
+     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
      public void saveEmployee(Employee emp) {
         employeeRepository.save(emp);
         salaryRepository.save(emp.getSalary());
