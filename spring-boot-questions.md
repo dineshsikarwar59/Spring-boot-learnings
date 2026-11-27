@@ -428,17 +428,19 @@ HikariCP is a high-performance JDBC connection pool used to manage database conn
 Instead of creating a new database connection for every request, HikariCP maintains a pool of reusable connections, improving performance and reducing database overhead.
 
 **Why Use HikariCP?**
+
 - High performance and low latency
 - Fast database connection management
 - Reduces the overhead of creating new connections
 - Better throughput and lower memory usage
 - Default connection pool in Spring Boot
 
+```properties
           spring.datasource.hikari.maximum-pool-size=10
           spring.datasource.hikari.minimum-idle=5
           spring.datasource.hikari.connection-timeout=30000
           spring.datasource.hikari.idle-timeout=600000
-
+```
 **Advantages**
 - Faster than many other connection pools
 - Efficient resource utilization
