@@ -199,6 +199,7 @@ PUT is used to fully update a resource and replaces the entire object, while PAT
 
 **Important Attributes**
 
+```java
      @Transactional(
      propagation = Propagation.REQUIRED, 
      isolation = Isolation.READ_COMMITTED,
@@ -208,6 +209,7 @@ PUT is used to fully update a resource and replaces the entire object, while PAT
         employeeRepository.save(emp);
         salaryRepository.save(emp.getSalary());
      }
+```
 
 - Propagation → How transactions behave across methods
 - Isolation → Controls visibility of data changes
