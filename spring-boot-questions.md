@@ -231,7 +231,7 @@ PUT is used to fully update a resource and replaces the entire object, while PAT
 - **SUPPORTS** – Used for methods that can run with or without a transaction, such as read-only operations.
 
 **Interview Answer (Short)**
-Transaction propagation defines how Spring manages transactions when one transactional method calls another. The default propagation is REQUIRED, which joins an existing transaction or creates a new one if none exists. Other propagation levels include REQUIRES_NEW, SUPPORTS, NOT_SUPPORTED, MANDATORY, NEVER, and NESTED, each controlling transaction behavior in different scenarios.
+Transaction propagation defines how Spring manages transactions when one transactional method calls another. The default propagation is REQUIRED.
 
 ## 16. What are Isolation Levels in Spring Transactions?
 **Answer:**
