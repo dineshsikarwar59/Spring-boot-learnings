@@ -408,11 +408,17 @@ Spring Security is a powerful authentication and authorization framework for Spr
 
 **Authorization** - What can you access?
 
+**Interview Answer (Short):** 
+
+Authentication is the process of verifying a user's identity using credentials such as a username and password. Authorization is the process of determining what an authenticated user can access
+
 ## 26. What is CORS?
 
 **Answer:** Cross-Origin Resource Sharing allows requests from different domains.
 
+```java
          @CrossOrigin(origins="http://localhost:3000")
+```
 
 ## 27. What is HikariCP?
 
