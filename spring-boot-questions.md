@@ -451,7 +451,7 @@ Instead of creating a new database connection for every request, HikariCP mainta
 
 **Answer**
 
-**Microservices Architecture** is a software design approach where an application is divided into small, independent services. Each service is responsible for a specific business capability and can be developed, deployed, and scaled independently.
+**Microservices Architecture** is a software design approach where an application is divided into small, independent services. Each service focuses on a specific business capability and can be developed, deployed, and scaled independently.
 
 **Features**
 
