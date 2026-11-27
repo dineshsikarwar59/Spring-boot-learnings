@@ -249,21 +249,29 @@ Isolation levels define how transactions are isolated from each other when multi
 **Isolation** levels define how transactions are isolated from each other when multiple transactions execute concurrently. It help prevent data inconsistency.
 
 ## 18. What is Lazy Loading and Eager Loading?
+
 1. **Lazy Loading:** The related entity is not loaded until it is actually accessed.
-   
+
+```java
        @OneToMany(fetch = FetchType.LAZY)
        private List<Employee> employees;
+```
+
    **Example**
 
+```java
        Department dept = departmentRepository.findById(1L).get();
        // Employees are loaded only when this is called
        dept.getEmployees();
-2. **Eager Loading:** The related entity is loaded immediately along with the parent entity.
+```
 
+1. **Eager Loading:** The related entity is loaded immediately along with the parent entity.
+
+```java
        @OneToMany(fetch = FetchType.EAGER)
        private List<Employee> employees;
        Department dept = departmentRepository.findById(1L).get();
-
+```
 
    The Department and its employees are fetched together in the same operation.
 
@@ -280,7 +288,7 @@ Isolation levels define how transactions are isolated from each other when multi
 
 **Interview Answer (Short)**
 
-Lazy Loading loads related entities only when they are accessed, improving performance by avoiding unnecessary database queries. Eager Loading loads related entities immediately along with the parent entity. Lazy loading is generally preferred for better performance, while eager loading is useful when related data is always needed.
+**Lazy Loading** loads related entities only when they are accessed, improving performance by avoiding unnecessary database queries. **Eager Loading** loads related entities immediately along with the parent entity. **Lazy loading** is generally preferred for better performance, while **eager loading** is useful when related data is always needed.
 
 ## 19. What is the N+1 Query Problem?
 
