@@ -370,15 +370,19 @@ Each profile can have its own configuration file, and Spring Boot loads the appr
 
 **Profile Configuration Files**
 
+```properties
      application.properties          // Common configuration
      application-dev.properties      // Development
      application-test.properties     // Testing
      application-prod.properties     // Production
+```
 
 **Activate a Profile**
 In application.properties:
 
+```properties
      spring.profiles.active=dev
+```
 
 ## 23. What is Spring Security?
 
