@@ -475,7 +475,7 @@ Microservices communicate with each other using synchronous or asynchronous comm
 
 ## 30. What is API Gateway?
 
-**Answer:** An **API Gateway** is a server that acts as a **single entry point** for all client requests in a microservices architecture. It routes requests to the appropriate microservices and handles common cross-cutting concerns.
+**Answer:** An **API Gateway** is a server that acts as a **single entry point** for all client requests in a microservices architecture. It routes requests to the appropriate microservices.
 
 **Responsibilities**
 
