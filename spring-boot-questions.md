@@ -169,11 +169,11 @@ Spring provides different bean scopes to control the lifecycle of beans:
 
 **Answer:** Both PUT and PATCH are HTTP methods used for updating resources in REST APIs, but they differ in how much data they update.
 
-PUT:
+**PUT:**
 - Updates entire object
 - Idempotent
 
-PATCH:
+**PATCH:**
 - Partial update
 - Only modified fields
 
