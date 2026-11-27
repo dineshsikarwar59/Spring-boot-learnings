@@ -300,23 +300,30 @@ This results in N+1 database queries, which can significantly degrade performanc
 - Department
 - Employee (@OneToMany relationship)
 
-       List<Department> departments = departmentRepository.findAll();
+```java
+   List<Department> departments = departmentRepository.findAll();
+```
 
  - Hibernate executes:
-   
+
+ ```sql
        SELECT * FROM department;       -- 1 query
+```
 
 - When you access employees:
-  
+
+ ```java 
       for (Department dept : departments) {
            dept.getEmployees();
       }
-
+```
 - Hibernate executes:
-  
+
+```sql
        SELECT * FROM employee WHERE department_id = 1;
        SELECT * FROM employee WHERE department_id = 2;
        SELECT * FROM employee WHERE department_id = 3;
+```
 
   If there are 10 departments, Hibernate executes:
 
@@ -328,8 +335,10 @@ Total = 11 queries (N+1 Problem).
 
 - Use JOIN FETCH in JPQL
 
+```java
       @Query("SELECT d FROM Department d JOIN FETCH d.employees")
        List<Department> findAllDepartments();
+```
 
 - Use @EntityGraph to fetch related entities efficiently.
 - Use DTO projections when only specific fields are needed.
