@@ -398,6 +398,10 @@ In application.properties:
 - **OAuth2** – Enables secure authentication and authorization with third-party providers (e.g., Google, GitHub).
 - **CSRF Protection** – Protects applications against Cross-Site Request Forgery (CSRF) attacks.
 
+**Interview Answer (Short)**
+
+Spring Security is a powerful authentication and authorization framework for Spring applications. It helps secure applications by protecting resources and controlling user access.
+
 ## 25. Difference between Authentication and Authorization?
 
 **Authentication:** - Who are you?
