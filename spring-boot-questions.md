@@ -245,6 +245,7 @@ Isolation levels define how transactions are isolated from each other when multi
 - **SERIALIZABLE** – The highest isolation level. Transactions are executed sequentially, preventing dirty reads, non-repeatable reads, and phantom reads, but with reduced concurrency.
 
 **Interview Answer (Short):**
+
 **Isolation** levels define how transactions are isolated from each other when multiple transactions execute concurrently. It help prevent data inconsistency.
 
 ## 18. What is Lazy Loading and Eager Loading?
