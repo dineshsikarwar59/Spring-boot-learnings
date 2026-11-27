@@ -149,7 +149,9 @@ Types:
 - • **Dependency injection:** Automatically supplies required dependencies via constructors, setters, or fields.
 - • **Lifecycle and scope management:** Controls when objects are created, reused (such as singleton vs. prototype scopes), and destroyed.
 
-**Interview Answer (Short):** **Spring IoC Container** is a framework component that creates, configures, wires dependencies, and manages the lifecycle of objects
+**Interview Answer (Short):** 
+
+**Spring IoC Container** is a framework component that creates, configures, wires dependencies, and manages the lifecycle of objects
 
 ## 9. What is Bean Scope in Spring?
 
